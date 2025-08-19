@@ -1,0 +1,271 @@
+/* Minimal, elegant styles */
+:root {
+  --bg: #fff;
+  --fg: #222;
+  --muted: #666;
+  --primary: #0f766e;
+  --accent: #8b5cf6;
+  --border: #e6e6e6;
+  --card: #fafafa;
+}
+
+* {
+  box-sizing: border-box
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  line-height: 1.5
+}
+
+a {
+  color: inherit;
+  text-decoration: none
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 3rem;
+  margin: 0.5rem 0;
+  text-align: center
+}
+
+.subtitle {
+  color: var(--muted);
+  margin-bottom: 2rem
+}
+
+.flag {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem
+}
+
+.lang-label {
+  font-size: 1.25rem;
+  font-weight: 600
+}
+
+/* Main page */
+/* Cover Photo */
+.cover-photo img {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  border-radius: 0 0 20px 20px;
+  display: block;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 2rem;
+  align-items: center
+}
+
+.hero img {
+  width: 100%;
+  border-radius: 20px
+}
+
+@media(max-width:860px) {
+  .hero {
+    grid-template-columns: 1fr
+  }
+}
+
+.kicker {
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--primary);
+  font-weight: 700
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  line-height: 1.1;
+  margin: .25rem 0
+}
+
+.hero .date {
+  color: var(--muted);
+  font-size: 1.1rem
+}
+
+.btn {
+  display: inline-block;
+  padding: .8rem 1.1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  transition: transform .15s ease, box-shadow .15s ease
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .06)
+}
+
+.section {
+  padding: 3rem 0;
+  border-top: 1px solid var(--border)
+}
+
+.section h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  margin: .25rem 0 1rem
+}
+
+.lead {
+  color: var(--muted)
+}
+
+.two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem
+}
+
+@media(max-width:860px) {
+  .two {
+    grid-template-columns: 1fr
+  }
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  background: var(--card)
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px
+}
+
+@media(min-width:860px) {
+  .gallery {
+    grid-template-columns: repeat(4, 1fr)
+  }
+}
+
+.gallery img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  cursor: pointer
+}
+
+.badge {
+  display: inline-block;
+  padding: .25rem .55rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: .8rem;
+  color: var(--muted)
+}
+
+.footer {
+  padding: 2rem 0;
+  color: var(--muted);
+  text-align: center
+}
+
+.countdown {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem
+}
+
+.timebox {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: .8rem 1rem;
+  text-align: center;
+  min-width: 72px
+}
+
+.timebox .num {
+  font-weight: 700;
+  font-size: 1.4rem
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .65);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 50
+}
+
+.modal.open {
+  display: flex
+}
+
+.modal img {
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 10px
+}
+
+/* Comments */
+.comment-form {
+  display: flex;
+  gap: .5rem;
+  margin: .5rem 0 1rem
+}
+
+.comment-form input,
+.comment-form textarea {
+  width: 100%;
+  padding: .75rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font: inherit
+}
+
+.comment-form button {
+  padding: .75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor: pointer
+}
+
+.comment {
+  border-top: 1px solid var(--border);
+  padding: .75rem 0
+}
+
+.comment .meta {
+  font-size: .85rem;
+  color: var(--muted)
+}

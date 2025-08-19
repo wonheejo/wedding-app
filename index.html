@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wedding Invitation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .lang-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      text-align: center;
+      background: var(--card);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .lang-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, .08);
+    }
+
+    .lang-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 640px) {
+      .lang-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container center">
+    <h1 class="title">Our Wedding</h1>
+    <p class="subtitle">Choose your language</p>
+    <div class="lang-grid">
+      <a class="lang-card" href="main.html?lang=en">
+        <div class="flag">🇸🇬</div>
+        <div class="lang-label">English</div>
+      </a>
+      <a class="lang-card" href="main.html?lang=ko">
+        <div class="flag">🇰🇷</div>
+        <div class="lang-label">한국어</div>
+      </a>
+    </div>
+  </main>
+</body>
+
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wedding Invitation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="container" style="display:flex;justify-content:space-between;align-items:center;gap:1rem">
+    <div><span class="badge" id="languageBadge">English</span></div>
+    <nav style="display:flex;gap:.5rem">
+      <a class="btn" id="switchEn" href="?lang=en">EN</a>
+      <a class="btn" id="switchKo" href="?lang=ko">KO</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Cover Photo -->
+    <section class="cover-photo">
+      <img src="assets/img_cover.jpg" alt="Cover Photo">
+    </section>
+    <!-- Hero -->
+    <section class="hero">
+      <img src="assets/img1.png" alt="Couple photo">
+      <div>
+        <div class="kicker" data-i18n="hero.kicker">We’re getting married</div>
+        <h1 data-i18n="hero.title">Alex & Jina</h1>
+        <div class="date" data-i18n="hero.date">Saturday, October 18, 2025 • 2:00 PM</div>
+        <div class="countdown" id="countdown"></div>
+        <div style="margin-top:1rem; display:flex; gap:.5rem; flex-wrap:wrap">
+          <a class="btn" href="#details" data-i18n="cta.details">Event Details</a>
+          <a class="btn" href="#rsvp" data-i18n="cta.rsvp">RSVP / Contact</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Details -->
+    <section class="section" id="details">
+      <h2 data-i18n="details.heading">The Day</h2>
+      <p class="lead" data-i18n="details.sub">Everything you need to know for a smooth, happy day.</p>
+      <div class="card">
+        <h3 data-i18n="when.heading">When</h3>
+        <p data-i18n="when.body">Ceremony at 2:00 PM, reception to follow.</p>
+        <p class="badge" data-i18n="when.dress">Dress code: Semi-formal</p>
+      </div>
+      <div class="card">
+        <h3 data-i18n="where.heading">Where</h3>
+        <p><strong data-i18n="where.venueName">Riverside Hall</strong></p>
+        <p data-i18n="where.venueAddr">123 Han River Rd, Seoul</p>
+        <a class="btn" target="_blank" id="mapLink" data-i18n="where.map">Open in Google Maps</a>
+      </div>
+    </section>
+
+    <!-- How to get there -->
+    <section class="section" id="getting-there">
+      <h2 data-i18n="how.heading">How to get there</h2>
+      <div class="card">
+        <img src="assets/img2.png" alt="Venue map" style="max-width:100%; border-radius:12px; margin-bottom:1rem">
+        <h3 data-i18n="how.publicHeading">By public transport</h3>
+        <p data-i18n="how.publicBody">Subway Line 2 to City Hall, Exit 4. Bus 100 or 301 to Riverside Stop.</p>
+        <h3 data-i18n="how.driveHeading">By car</h3>
+        <p data-i18n="how.driveBody">On-site parking available (free up to 3 hours).</p>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="section" id="gallery">
+      <h2 data-i18n="gallery.heading">Photos</h2>
+      <p class="lead" data-i18n="gallery.sub">A few favorites — more to come!</p>
+      <div class="gallery">
+        <img src="assets/img3.png" alt="Gallery 1">
+        <img src="assets/img4.png" alt="Gallery 2">
+        <img src="assets/img5.png" alt="Gallery 3">
+        <img src="assets/img6.png" alt="Gallery 4">
+      </div>
+    </section>
+
+    <!-- Comments -->
+    <section class="section" id="comments">
+      <h2 data-i18n="comments.heading">Leave a message</h2>
+      <form class="comment-form" id="commentForm">
+        <input id="nameInput" placeholder="Your name" required />
+        <textarea id="msgInput" rows="2" placeholder="Your message..." required></textarea>
+        <button type="submit" class="btn" data-i18n="comments.submit">Post</button>
+      </form>
+      <div id="commentsList"></div>
+      <div class="badge" style="margin-top:.5rem" data-i18n="comments.note">Comments are stored locally in your browser.
+      </div>
+    </section>
+
+    <!-- RSVP / Contact -->
+    <section class="section" id="rsvp">
+      <h2 data-i18n="rsvp.heading">RSVP / Contact</h2>
+      <p data-i18n="rsvp.body">Please message us on Kakao or email: <a
+          href="mailto:hello@example.com">hello@example.com</a>.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>&copy; <span id="year"></span> <span data-i18n="footer.names">Alex & Jina</span></div>
+  </footer>
+
+  <!-- Lightbox Modal -->
+  <div class="modal" id="lightbox">
+    <img alt="Expanded">
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
