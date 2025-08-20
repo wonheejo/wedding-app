@@ -4,46 +4,46 @@ const I18N = {
     hero: {
       kicker: "We’re getting married",
       title: "Alex & Jina",
-      date: "Saturday, October 18, 2025 • 2:00 PM",
+      date: "Saturday, October 18, 2025 • 4:00 PM",
     },
     cta: { details: "Event Details", rsvp: "RSVP / Contact" },
     details: { heading: "The Day", sub: "Everything you need to know for a smooth, happy day." },
-    when: { heading: "When", body: "Ceremony at 2:00 PM, reception to follow.", dress: "Dress code: Semi-formal" },
-    where: { heading: "Where", venueName: "Riverside Hall", venueAddr: "123 Han River Rd, Seoul", map: "Open in Google Maps" },
+    when: { heading: "When", body: "Ceremony at 4:00 PM, reception to follow.", dress: "Dress code: Semi-formal" },
+    where: { heading: "Where", venueName: "Koreana Hotel", venueAddr: "Koreana Hotel, 135 Sejong-daero, Jung District, Seoul", map: "Open in Google Maps" },
     how: {
       heading: "How to get there",
       publicHeading: "By public transport",
-      publicBody: "Subway Line 2 to City Hall, Exit 4. Bus 100 or 301 to Riverside Stop.",
+      publicBody: "Subway: Line 2 City Hall, Exit 4 or Line 5 GwangHwaMoon Square, Exit 6. Bus: Seoul Sinmoon or Press Center Stop.",
       driveHeading: "By car",
       driveBody: "On-site parking available (free up to 3 hours)."
     },
     gallery: { heading: "Photos", sub: "A few favorites — more to come!" },
     comments: { heading: "Leave a message", submit: "Post", note: "Comments are stored locally in your browser." },
-    rsvp: { heading: "RSVP / Contact", body: "Please message us on Kakao or email: hello@example.com." },
-    footer: { names: "Alex & Jina" },
+    rsvp: { heading: "RSVP / Contact", body: "Please message us on Kakao or email: wonheejo@gmail.com or averylchan@gmail.com" },
+    footer: { names: "Wonhee & Averyl" },
     badge: "English"
   },
   ko: {
     hero: {
       kicker: "저희 결혼합니다",
-      title: "알렉스 & 지나",
-      date: "2025년 10월 18일 (토) • 오후 2시",
+      title: "조원희 & 지아",
+      date: "2025년 10월 18일 (토) • 오후 4시",
     },
     cta: { details: "행사 안내", rsvp: "RSVP / 연락" },
     details: { heading: "그날의 일정", sub: "편안하고 행복한 하루를 위한 안내입니다." },
-    when: { heading: "시간", body: "예식 오후 2시, 이후 피로연이 이어집니다.", dress: "드레스코드: 세미포멀" },
-    where: { heading: "장소", venueName: "리버사이드 홀", venueAddr: "서울 한강로 123", map: "구글지도 열기" },
+    when: { heading: "시간", body: "예식 오후 4시, 이후 피로연이 이어집니다.", dress: "드레스코드: 세미포멀" },
+    where: { heading: "장소", venueName: "코리아나 호텔", venueAddr: "서울 중구 세종대로 135", map: "구글지도 열기" },
     how: {
       heading: "오시는 길",
       publicHeading: "대중교통",
-      publicBody: "2호선 시청역 4번 출구. 버스 100 또는 301 리버사이드 정류장 하차.",
+      publicBody: "2호선 시청역 3번 출구 또는 5호선 광화문역 6번 출구. 버스 서울신문사 또는 프레스센터 정류장 하차.",
       driveHeading: "자가용",
-      driveBody: "주차 가능 (최대 3시간 무료)."
+      driveBody: "하이파킹 코리아나호텔 주차장 (최대 2시간 무료)."
     },
     gallery: { heading: "사진", sub: "몇 장 먼저 공개해요. 더 올라올 예정!" },
     comments: { heading: "메시지 남기기", submit: "등록", note: "댓글은 브라우저에만 저장됩니다." },
-    rsvp: { heading: "RSVP / 연락", body: "카카오톡 또는 이메일(hello@example.com)로 연락 부탁드립니다." },
-    footer: { names: "알렉스 & 지나" },
+    rsvp: { heading: "RSVP / 연락", body: "카카오톡 또는 이메일(wonheejo@gmail.com)로 연락 부탁드립니다." },
+    footer: { names: "원희 & 지아" },
     badge: "한국어"
   }
 };
@@ -59,18 +59,49 @@ function applyI18N(lang) {
   document.documentElement.lang = lang === "ko" ? "ko" : "en";
   document.querySelector("#languageBadge").textContent = dict.badge;
 
-  // Map links (example place id/search query)
-  const mapQuery = encodeURIComponent(dict.where.venueName + " " + dict.where.venueAddr);
-  const mapHref = "https://www.google.com/maps/search/?api=1&query=" + mapQuery;
-  document.querySelector("#mapLink").href = mapHref;
+  // Build map links based on language
+  const venueName = dict.where.venueName;
+  const venueAddr = dict.where.venueAddr;
+
+  const mapLinksEL = document.getElementById("mapLinks");
+  mapLinksEL.innerHTML = ""; //reset
+
+  const q = encodeURIComponent(`${venueName} ${venueAddr}`);
+
+  if (lang === "ko") {
+    // Naver + Kakao side by side
+    const naverHref = `https://map.naver.com/v5/search/${q}`;
+    const kakaoHref = `https://map.kakao.com/?q=${q}`;
+
+    mapLinksEL.appendChild(makeBtn(naverHref, dict.where.mapNaver || "네이버지도"));
+    mapLinksEL.appendChild(makeBtn(kakaoHref, dict.where.mapKakao || "카카오맵"));
+  } else {
+    // Google maps only
+    const gmapHref = `https://www.google.com/maps/search/?api=1&query=${q}`;
+    mapLinksEL.appendChild(makeBtn(gmapHref, dict.where.map || "Open in Google Maps"));
+  }
 
   // Iterate all elements with data-i18n="path.to.key"
   document.querySelectorAll("[data-i18n]").forEach(el => {
     const path = el.getAttribute("data-i18n").split(".");
     let cur = dict;
     for (const k of path) cur = cur?.[k];
-    if (typeof cur === "string") el.textContent = cur;
+    if (typeof cur === "string") {
+      // allow HTML only for RSVP body if i need 
+      if (path.join(".") === "rsvp.body") el.innerHTML = cur;
+      else el.textContent = cur;
+    }
   });
+}
+
+function makeBtn(href, label) {
+  const a = document.createElement("a");
+  a.className = "btn";
+  a.target = "_blank";
+  a.rel = "noopener";
+  a.href = href;
+  a.textContent = label;
+  return a;
 }
 
 function initCountdown() {
@@ -80,9 +111,9 @@ function initCountdown() {
   function tick() {
     const now = Date.now();
     let diff = Math.max(0, target - now);
-    const days = Math.floor(diff / (1000*60*60*24)); diff -= days*24*60*60*1000;
-    const hrs  = Math.floor(diff / (1000*60*60));    diff -= hrs*60*60*1000;
-    const mins = Math.floor(diff / (1000*60));       diff -= mins*60*1000;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24)); diff -= days * 24 * 60 * 60 * 1000;
+    const hrs = Math.floor(diff / (1000 * 60 * 60)); diff -= hrs * 60 * 60 * 1000;
+    const mins = Math.floor(diff / (1000 * 60)); diff -= mins * 60 * 1000;
     const secs = Math.floor(diff / 1000);
     el.innerHTML = `
       <div class="timebox"><div class="num">${days}</div><div>Days</div></div>
@@ -127,7 +158,7 @@ function loadComments() {
   }
 }
 
-function escapeHtml(str){
+function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str;
   return div.innerHTML;
@@ -154,7 +185,7 @@ function initYear() {
   document.getElementById("year").textContent = new Date().getFullYear();
 }
 
-(function init(){
+(function init() {
   const lang = getLang();
   applyI18N(lang);
   document.getElementById("switchEn").href = "?lang=en";
