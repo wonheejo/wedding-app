@@ -200,7 +200,7 @@ function initCommentForm() {
 function initYear() {
   document.getElementById("year").textContent = new Date().getFullYear();
 }
-
+/*
 function copyBank(btn) {
   const parent = btn.closest(".account");
   const numberEl = parent.querySelector(".bank-number");
@@ -214,6 +214,7 @@ function copyBank(btn) {
     btn.textContent = "❌ Error";
   });
 }
+  */
 
 (function init() {
   const lang = getLang();
@@ -226,3 +227,100 @@ function copyBank(btn) {
   loadComments();
   initYear();
 })();
+
+// Tiny toast for feedback
+(function ensureToast() {
+  if (!document.getElementById("copyToast")) {
+    const t = document.createElement("div");
+    t.id = "copyToast";
+    t.style.cssText = "position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:#111;color:#fff;padding:8px 12px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .2s;z-index:9999";
+    document.body.appendChild(t);
+  }
+})();
+function showToast(msg) {
+  const t = document.getElementById("copyToast");
+  t.textContent = msg;
+  t.style.opacity = "1";
+  setTimeout(() => (t.style.opacity = "0"), 1200);
+}
+
+async function copyBank(btn) {
+  try {
+    const parent = btn.closest(".account");
+    const numberEl = parent.querySelector(".bank-number");
+    const text = (numberEl?.textContent || "").trim();
+    if (!text) {
+      showToast("Nothing to copy");
+      return;
+    }
+
+    // Try modern Clipboard API (HTTPS or localhost + user gesture)
+    let ok = false;
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(text);
+        ok = true;
+      } catch (_) { }
+    }
+
+    // Fallback (works on most HTTP/older mobile browsers)
+    if (!ok) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "absolute";
+      ta.style.left = "-9999px";
+      ta.style.fontSize = "16px"; // avoid iOS zoom
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length); // iOS
+      try {
+        ok = document.execCommand("copy");
+      } catch (_) {
+        ok = false;
+      }
+      document.body.removeChild(ta);
+    }
+
+    // Last-resort iOS trick (contentEditable selection)
+    if (!ok) {
+      const span = document.createElement("span");
+      span.textContent = text;
+      span.contentEditable = "true";
+      span.style.position = "absolute";
+      span.style.left = "-9999px";
+      document.body.appendChild(span);
+
+      const range = document.createRange();
+      range.selectNodeContents(span);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      try {
+        ok = document.execCommand("copy");
+      } catch (_) {
+        ok = false;
+      }
+      sel.removeAllRanges();
+      document.body.removeChild(span);
+    }
+
+    if (ok) {
+      btn.textContent = "✅ Copied!";
+      showToast("Copied");
+      setTimeout(() => (btn.textContent = "📋 Copy"), 1200);
+    } else {
+      btn.textContent = "❌ Copy";
+      showToast("Copy failed");
+      alert("Copy failed. Long-press and copy:\n\n" + text);
+    }
+  } catch (e) {
+    console.error("Copy error:", e);
+    showToast("Copy error");
+  }
+}
+
+// expose for inline onclick
+window.copyBank = copyBank;
+

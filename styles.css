@@ -362,6 +362,10 @@ img {
   transition: background 0.2s ease;
 }
 
+.copy-btn:active {
+  filter: brightness(0.9);
+}
+
 .copy-btn:hover {
   background: var(--accent);
 }
