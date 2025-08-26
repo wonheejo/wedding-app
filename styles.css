@@ -326,3 +326,21 @@ img {
   font-size: .85rem;
   color: var(--muted)
 }
+
+.bank-info {
+  margin-top: 2rem;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.bank-info h3 {
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 0.5rem;
+}
+
+.account {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+}

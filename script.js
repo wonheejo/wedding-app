@@ -3,7 +3,7 @@ const I18N = {
   en: {
     hero: {
       kicker: "We’re getting married",
-      title: "Alex & Jina",
+      title: "Wonhee & Jina",
       date: "Saturday, October 18, 2025 • 4:00 PM",
     },
     cta: { details: "Event Details", rsvp: "RSVP / Contact" },
@@ -20,6 +20,14 @@ const I18N = {
     gallery: { heading: "Photos", sub: "A few favorites — more to come!" },
     comments: { heading: "Leave a message", submit: "Post", note: "Comments are stored locally in your browser." },
     rsvp: { heading: "RSVP / Contact", body: "Please message us on Kakao or email: wonheejo@gmail.com or averylchan@gmail.com" },
+    bank: {
+      heading: "Bank Account Info",
+      sub: "For those who cannot attend but would like to send their wishes:",
+      name1: "Wonhee Jo",
+      bank1: "Kakaobank 3333086056884",
+      name2: "Averyl Chan",
+      bank2: "Wooribank 1234567890"
+    },
     footer: { names: "Wonhee & Averyl" },
     badge: "English"
   },
@@ -43,6 +51,14 @@ const I18N = {
     gallery: { heading: "사진", sub: "몇 장 먼저 공개해요. 더 올라올 예정!" },
     comments: { heading: "메시지 남기기", submit: "등록", note: "댓글은 브라우저에만 저장됩니다." },
     rsvp: { heading: "RSVP / 연락", body: "카카오톡 또는 이메일(wonheejo@gmail.com)로 연락 부탁드립니다." },
+    bank: {
+      heading: "계좌안내",
+      sub: "참석이 어려우신 분들께서는 마음을 전달해 주시면 감사하겠습니다",
+      name1: "조원희",
+      bank1: "카카오뱅크 3333086056884",
+      name2: "지아",
+      bank2: "우리은행 1234567890"
+    },
     footer: { names: "원희 & 지아" },
     badge: "한국어"
   }
