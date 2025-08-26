@@ -201,6 +201,20 @@ function initYear() {
   document.getElementById("year").textContent = new Date().getFullYear();
 }
 
+function copyBank(btn) {
+  const parent = btn.closest(".account");
+  const numberEl = parent.querySelector(".bank-number");
+  const text = numberEl.textContent;
+
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = "✅ Copied!";
+    setTimeout(() => (btn.textContent = "📋 Copy"), 1500);
+  }).catch(err => {
+    console.error("Copy Failed", err);
+    btn.textContent = "❌ Error";
+  });
+}
+
 (function init() {
   const lang = getLang();
   applyI18N(lang);
