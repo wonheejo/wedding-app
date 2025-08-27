@@ -3,7 +3,7 @@ const I18N = {
   en: {
     hero: {
       kicker: "We’re getting married",
-      title: "Wonhee & Jina",
+      title: "Wonhee & Averyl",
       date: "Saturday, October 18, 2025 • 4:00 PM",
     },
     cta: { details: "Event Details", rsvp: "RSVP / Contact" },
@@ -17,16 +17,18 @@ const I18N = {
       driveHeading: "By car",
       driveBody: "On-site parking available (free up to 3 hours)."
     },
-    gallery: { heading: "Photos", sub: "A few favorites — more to come!" },
+    gallery: { heading: "Gallery", sub: "A few favorites — more to come!" },
     comments: { heading: "Leave a message", submit: "Post", note: "Comments are stored locally in your browser." },
     rsvp: { heading: "RSVP / Contact", body: "Please message us on Kakao or email: wonheejo@gmail.com or averylchan@gmail.com" },
     bank: {
       heading: "Bank Account Info",
       sub: "For those who cannot attend but would like to send their wishes:",
       name1: "Wonhee Jo",
-      bank1: "Kakaobank 3333086056884",
+      bank1: "Kakaobank 333308-605-6884",
       name2: "Averyl Chan",
-      bank2: "Wooribank 1234567890"
+      bank2: "Wooribank 1002-863-255898",
+      bank3: "POSB Savings 228-398500",
+      bank4: "Paynow +65 92981294"
     },
     footer: { names: "Wonhee & Averyl" },
     badge: "English"
@@ -246,8 +248,8 @@ function showToast(msg) {
 
 async function copyBank(btn) {
   try {
-    const parent = btn.closest(".account");
-    const numberEl = parent.querySelector(".bank-number");
+    // const parent = btn.closest(".account");
+    const numberEl = btn.previousElementSibling;
     const text = (numberEl?.textContent || "").trim();
     if (!text) {
       showToast("Nothing to copy");
@@ -309,7 +311,7 @@ async function copyBank(btn) {
     if (ok) {
       btn.textContent = "✅ Copied!";
       showToast("Copied");
-      setTimeout(() => (btn.textContent = "📋 Copy"), 1200);
+      setTimeout(() => (btn.textContent = "📋"), 10);
     } else {
       btn.textContent = "❌ Copy";
       showToast("Copy failed");
@@ -323,4 +325,3 @@ async function copyBank(btn) {
 
 // expose for inline onclick
 window.copyBank = copyBank;
-
