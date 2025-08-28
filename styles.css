@@ -378,3 +378,21 @@ img {
 .copy-btn:hover {
   background: var(--accent);
 }
+
+.audio-btn {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.6rem 0.8rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .0.8);
+}
+
+.audio-btn:active {
+  transform: translateY(1px);
+}

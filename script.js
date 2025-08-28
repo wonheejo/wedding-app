@@ -59,7 +59,9 @@ const I18N = {
       name1: "조원희",
       bank1: "카카오뱅크 3333086056884",
       name2: "지아",
-      bank2: "우리은행 1234567890"
+      bank2: "우리은행 1002-863-255898",
+      bank3: "POSB Savings 228-398500",
+      bank4: "Paynow +65 92981294"
     },
     footer: { names: "원희 & 지아" },
     badge: "한국어"
@@ -325,3 +327,61 @@ async function copyBank(btn) {
 
 // expose for inline onclick
 window.copyBank = copyBank;
+
+(function initBgm() {
+  const bgm = document.getElementById("bgm");
+  const btn = document.getElementById("audioToggle");
+  if (!bgm || !btn) return;
+
+  const PREF_KEY = "bgm_pref"; // 'on' | 'off'
+  const setBtn = (on) => {
+    btn.textContent = on ? "🔊" : "🔇";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  };
+
+  // default volume (tweak if you like)
+  bgm.volume = 0.5;
+
+  async function playBgm() {
+    try {
+      await bgm.play();
+      setBtn(true);
+      localStorage.setItem(PREF_KEY, "on");
+      removeGateListeners();
+      return true;
+    } catch (e) {
+      // Autoplay blocked
+      return false;
+    }
+  }
+  function pauseBgm() {
+    bgm.pause();
+    setBtn(false);
+    localStorage.setItem(PREF_KEY, "off");
+  }
+
+  // Button toggle
+  btn.addEventListener("click", async () => {
+    if (bgm.paused) await playBgm();
+    else pauseBgm();
+  });
+
+  // Try to autoplay if user previously enabled it
+  const wantOn = localStorage.getItem(PREF_KEY) === "on";
+
+  // Some browsers need a user gesture; attach one-time “gate” listeners
+  const gate = async () => { if (wantOn) await playBgm(); else setBtn(false); };
+  const gateEvents = ["pointerdown", "touchstart", "keydown", "scroll"];
+  const removeGateListeners = () => gateEvents.forEach(ev => document.removeEventListener(ev, gate));
+  gateEvents.forEach(ev => document.addEventListener(ev, gate, { once: true, passive: true }));
+
+  // First attempt: immediate autoplay (works on some Android/desktop)
+  (async () => {
+    if (wantOn) {
+      const ok = await playBgm();
+      if (!ok) setBtn(false); // show muted icon until user interacts
+    } else {
+      setBtn(false);
+    }
+  })();
+})();
