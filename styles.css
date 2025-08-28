@@ -216,13 +216,13 @@ img {
 
 .gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px
+  grid-template-columns: 1fr;
+  gap: 12px;
 }
 
 @media(min-width:720px) {
   .gallery {
-    grid-template-columns: repeat(4, 1fr)
+    grid-template-columns: repeat(2, 1fr)
   }
 
   .gallery {
@@ -232,12 +232,17 @@ img {
 
 .gallery img {
   width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 3;
+  height: 180px;
   object-fit: cover;
   display: block;
   border-radius: 12px;
-  cursor: pointer
+  cursor: pointer;
+}
+
+#gallery,
+#comments,
+#rsvp {
+  clear: both;
 }
 
 .badge {
