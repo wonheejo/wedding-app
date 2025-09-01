@@ -487,3 +487,72 @@ img {
   background: #fff;
   font-size: 0.8rem;
 }
+
+.intro-line {
+  font-size: 1rem;
+  color: var(--muted);
+  margin: 0.25rem 0;
+  font-weight: 500;
+}
+
+.intro-section {
+  margin-top: 2rem;
+  /* adjust as needed */
+}
+
+/* Mini calendar */
+.mini-cal {
+  max-width: 360px;
+  margin: .75rem auto 1.25rem;
+  padding: .75rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.mini-cal .cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.mini-cal .dow,
+.mini-cal .day {
+  text-align: center;
+  padding: .35rem 0;
+  border-radius: 10px;
+  font-size: .95rem;
+}
+
+.mini-cal .dow {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.mini-cal .dow:nth-child(1) {
+  color: #d14;
+}
+
+/* Sun in red */
+.mini-cal .day {
+  color: #333;
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.mini-cal .day.sun {
+  color: #d14;
+}
+
+/* Sundays */
+.mini-cal .day.is-empty {
+  visibility: hidden;
+}
+
+/* blanks before 1st */
+.mini-cal .day.is-target {
+  background: #66a96b;
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+}

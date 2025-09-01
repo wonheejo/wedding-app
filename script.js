@@ -7,8 +7,19 @@ const I18N = {
       date: "Saturday, October 18, 2025 • 4:00 PM",
     },
     cta: { details: "Event Details", rsvp: "RSVP / Contact" },
+    names: {
+      parents1: "Seongyong Jo & Hyekyung Byun's Son",
+      groom: "Wonhee Jo",
+      parents2: "○○○ · ○○○'s Daughter",
+      bride: "Averyl"
+    },
     details: { heading: "The Day", sub: "Everything you need to know for a smooth, happy day." },
-    when: { heading: "When", body: "Ceremony at 4:00 PM, reception to follow.", dress: "Dress code: Semi-formal" },
+    when: {
+      heading: "When",
+      body: "4:00 PM Ceremony",
+      body2: "Reception to follow",
+      body3: "6:00 PM Afterparty"
+    },
     where: { heading: "Where", venueName: "Koreana Hotel", venueAddr: "Koreana Hotel, 135 Sejong-daero, Jung District, Seoul", map: "Open in Google Maps" },
     how: {
       heading: "How to get there",
@@ -45,8 +56,19 @@ const I18N = {
       date: "2025년 10월 18일 (토) • 오후 4시",
     },
     cta: { details: "행사 안내", rsvp: "RSVP / 연락" },
+    names: {
+      parents1: "조성용 · 변혜경의 아들",
+      groom: "조원희",
+      parents2: "○○○ · ○○○의 딸",
+      bride: "지아"
+    },
     details: { heading: "그날의 일정", sub: "편안하고 행복한 하루를 위한 안내입니다." },
-    when: { heading: "시간", body: "예식 오후 4시, 이후 피로연이 이어집니다.", dress: "드레스코드: 세미포멀" },
+    when: {
+      heading: "시간",
+      body: "오후 4시 예식",
+      body2: "이후 피로연이 이어집니다",
+      body3: "피로연 이후 2부가 이어집니다",
+    },
     where: { heading: "장소", venueName: "코리아나 호텔", venueAddr: "서울 중구 세종대로 135", map: "구글지도 열기" },
     how: {
       heading: "오시는 길",
@@ -244,6 +266,47 @@ function toggleAccount(id) {
   el.style.display = (el.style.display === "block") ? "none" : "block";
 }
 
+// ---- Simple one-month calendar (drop-in) ----
+const WEDDING_DATE = new Date(2025, 9, 18); // 2025-10-18 (month is 0-based)
+function renderSimpleCal(containerId, date, lang) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+
+  const dowsEn = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const dowsKo = ["일", "월", "화", "수", "목", "금", "토"];
+  const isKO = (lang || document.documentElement.lang || "en").toLowerCase().startsWith("ko");
+  const dows = isKO ? dowsKo : dowsEn;
+
+  const y = date.getFullYear(), m = date.getMonth(), target = date.getDate();
+  const first = new Date(y, m, 1);
+  const startDow = first.getDay();
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+
+  // header (month/year in KO or EN)
+
+
+  let html = `<div class="cal-grid">`;
+  // weekdays
+  for (const d of dows) html += `<div class="dow">${d}</div>`;
+  // blanks
+  for (let i = 0; i < startDow; i++) html += `<div class="day is-empty">.</div>`;
+  // days
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dow = (startDow + (d - 1)) % 7;
+    const cls = ["day", (dow === 0 ? "sun" : ""), (d === target ? "is-target" : "")].filter(Boolean).join(" ");
+    html += `<div class="${cls}">${d}</div>`;
+  }
+  html += `</div>`;
+  el.innerHTML = html;
+}
+
+// render after DOM + (optionally) i18n applied
+(function initMiniCal() {
+  const lang = (new URLSearchParams(location.search).get("lang") || document.documentElement.lang || "en");
+  renderSimpleCal("miniCal", WEDDING_DATE, lang);
+})();
+
+
 (function init() {
   const lang = getLang();
   applyI18N(lang);
@@ -409,3 +472,4 @@ window.copyBank = copyBank;
     }
   })();
 })();
+
