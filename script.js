@@ -10,7 +10,7 @@ const I18N = {
     names: {
       parents1: "Seongyong Jo & Hyekyung Byun's Son",
       groom: "Wonhee Jo",
-      parents2: "○○○ · ○○○'s Daughter",
+      parents2: "Jakie Chan · Lydia Leow's Daughter",
       bride: "Averyl"
     },
     details: { heading: "The Day", sub: "Everything you need to know for a smooth, happy day." },
@@ -59,7 +59,7 @@ const I18N = {
     names: {
       parents1: "조성용 · 변혜경의 아들",
       groom: "조원희",
-      parents2: "○○○ · ○○○의 딸",
+      parents2: "Jakie Chan · Lydia Leow의 딸",
       bride: "지아"
     },
     details: { heading: "그날의 일정", sub: "편안하고 행복한 하루를 위한 안내입니다." },
