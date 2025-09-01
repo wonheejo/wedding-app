@@ -10,7 +10,7 @@ const I18N = {
     names: {
       parents1: "Seongyong Jo & Hyekyung Byun's Son",
       groom: "Wonhee Jo",
-      parents2: "Jakie Chan · Lydia Leow's Daughter",
+      parents2: "Jakie Chan & Lydia Leow's Daughter",
       bride: "Averyl"
     },
     details: { heading: "The Day", sub: "Everything you need to know for a smooth, happy day." },
@@ -18,7 +18,7 @@ const I18N = {
       heading: "When",
       body: "4:00 PM Ceremony",
       body2: "Reception to follow",
-      body3: "6:00 PM Afterparty"
+      body3: "6:00 PM After party"
     },
     where: { heading: "Where", venueName: "Koreana Hotel", venueAddr: "Koreana Hotel, 135 Sejong-daero, Jung District, Seoul", map: "Open in Google Maps" },
     how: {
@@ -82,7 +82,7 @@ const I18N = {
       publicSub31: "간선버스 402, 709",
       publicSub32: "지선버스 799, 종로09, 종로11",
       driveHeading: "자가용",
-      driveBody: "하이파킹 코리아나호텔 주차장 (최대 2시간 무료)."
+      driveBody: "하이파킹 코리아나호텔 주차장."
     },
     gallery: { heading: "사진", sub: "몇 장 먼저 공개해요. 더 올라올 예정!" },
     comments: { heading: "메시지 남기기", submit: "등록", note: "댓글은 브라우저에만 저장됩니다." },
