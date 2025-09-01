@@ -108,7 +108,8 @@ img {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+  justify-content: center;
+  text-align: center;
 }
 
 @media (max-width: 420px) {
@@ -121,7 +122,10 @@ img {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   gap: 2rem;
-  align-items: center
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .hero img {
@@ -132,6 +136,7 @@ img {
 @media(max-width:480px) {
   .hero {
     grid-template-columns: 1fr;
+    text-align: center;
   }
 
   .section {
@@ -166,13 +171,20 @@ img {
   font-size: 1.1rem
 }
 
+.hero h1,
+.hero .date,
+.hero .countdown {
+  text-align: center;
+}
+
 .btn {
   display: inline-block;
   padding: .8rem 1.1rem;
   border-radius: 12px;
   border: 1px solid var(--border);
   background: #fff;
-  transition: transform .15s ease, box-shadow .15s ease
+  transition: transform .15s ease, box-shadow .15s ease;
+  text-align: center;
 }
 
 .btn:hover {
@@ -184,6 +196,13 @@ img {
   position: relative;
   padding: 3rem 0;
   border-top: 1px solid var(--border)
+}
+
+.section .btn,
+.section .map-buttons {
+  display: inline-block;
+  margin: 0.5rem auto;
+  text-align: center;
 }
 
 .section h2 {
@@ -352,19 +371,42 @@ img {
 }
 
 .account-line {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  /* left = text, right = button */
+  grid-template-rows: auto auto;
+  /* two text rows */
+  gap: 4px 12px;
+  /* row gap, column gap */
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  background: var(--card);
+  margin: 0.5rem 0;
+  padding: 0.6rem 0.8rem;
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 0.75rem 1rem;
-  margin-top: 0.5rem;
+  background: var(--card);
+}
+
+/* Account holder (first row, left) */
+.account-line>p {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  font-weight: 700;
+  text-align: left;
+}
+
+/* Bank + account number (second row, left) */
+.account-line>.bank-number {
+  grid-column: 1;
+  grid-row: 2;
+  text-align: left;
+  word-break: keep-all;
+  /* prevents splitting digits */
 }
 
 .copy-btn {
-  position: static;
+  flex-shrink: 0;
+  margin-left: 8px;
   background: var(--primary);
   color: #fff;
   border: none;
@@ -375,11 +417,28 @@ img {
   transition: filter 0.2s ease;
 }
 
+/* Copy button (right side, spans both rows) */
+.account-line>.copy-btn {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: end;
+  margin-left: 8px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
 .copy-btn:active {
   filter: brightness(0.9);
 }
 
-.copy-btn:hover {
+.account-line>.copy-btn:hover {
   background: var(--accent);
 }
 
@@ -399,4 +458,32 @@ img {
 
 .audio-btn:active {
   transform: translateY(1px);
+}
+
+.drop-btn {
+  width: 100%;
+  text-align: left;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s ease;
+}
+
+.drop-btn:hover {
+  background: #f0f0f0;
+}
+
+.drop-content {
+  display: none;
+  margin-top: 0.5rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  font-size: 0.8rem;
 }

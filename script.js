@@ -23,12 +23,17 @@ const I18N = {
     bank: {
       heading: "Bank Account Info",
       sub: "For those who cannot attend but would like to send their wishes:",
+      title1: "Groom",
       name1: "Wonhee Jo",
       bank1: "Kakaobank 333308-605-6884",
-      name2: "Averyl Chan",
-      bank2: "Wooribank 1002-863-255898",
-      bank3: "POSB Savings 228-398500",
-      bank4: "Paynow +65 92981294"
+      name2: "SongRyong Jo",
+      bank2: "Wooribank 303-07-021641",
+      name3: "HyeKyung Byun",
+      bank3: "Wooribank 303-07-168463",
+      title2: "Bride",
+      bank4: "Wooribank 1002-863-255898",
+      bank5: "POSB Savings 228-398500",
+      bank6: "Paynow +65 92981294"
     },
     footer: { names: "Wonhee & Averyl" },
     badge: "English"
@@ -45,8 +50,15 @@ const I18N = {
     where: { heading: "장소", venueName: "코리아나 호텔", venueAddr: "서울 중구 세종대로 135", map: "구글지도 열기" },
     how: {
       heading: "오시는 길",
-      publicHeading: "대중교통",
-      publicBody: "2호선 시청역 3번 출구 또는 5호선 광화문역 6번 출구. 버스 서울신문사 또는 프레스센터 정류장 하차.",
+      publicHeading1: "지하철",
+      publicBody1: "1호선 시청역 3번 출구에서 도보로 약 200미터 또는 5호선 광화문역 6번 출구에서 도보로 약 100미터.",
+      publicHeading2: "버스",
+      publicBody2: "버스 서울신문사 정류장 하차 후 건너편.",
+      publicSub21: "간선버스 101, 150, 501, 506, 708",
+      publicSub22: "지선버스 1711, 7016",
+      publicBody3: "프레스센터 정류장 하차 후 건너편",
+      publicSub31: "간선버스 402, 709",
+      publicSub32: "지선버스 799, 종로09, 종로11",
       driveHeading: "자가용",
       driveBody: "하이파킹 코리아나호텔 주차장 (최대 2시간 무료)."
     },
@@ -56,12 +68,18 @@ const I18N = {
     bank: {
       heading: "계좌안내",
       sub: "참석이 어려우신 분들께서는 마음을 전달해 주시면 감사하겠습니다",
+      title1: "신랑",
       name1: "조원희",
       bank1: "카카오뱅크 3333086056884",
-      name2: "지아",
-      bank2: "우리은행 1002-863-255898",
-      bank3: "POSB Savings 228-398500",
-      bank4: "Paynow +65 92981294"
+      name2: "조성용",
+      bank2: "우리은행 303-07-021641",
+      name3: "변혜경",
+      bank3: "우리은행 303-07-168463",
+      title2: "신부",
+      name4: "에이브릴찬얀지아",
+      bank4: "우리은행 1002-863-255898",
+      bank5: "POSB Savings 228-398500",
+      bank6: "Paynow +65 92981294"
     },
     footer: { names: "원희 & 지아" },
     badge: "한국어"
@@ -219,6 +237,12 @@ function copyBank(btn) {
   });
 }
   */
+
+function toggleAccount(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = (el.style.display === "block") ? "none" : "block";
+}
 
 (function init() {
   const lang = getLang();

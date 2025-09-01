@@ -35,10 +35,6 @@
         <h1 data-i18n="hero.title">Alex & Jina</h1>
         <div class="date" data-i18n="hero.date">Saturday, October 18, 2025 • 2:00 PM</div>
         <div class="countdown" id="countdown"></div>
-        <div style="margin-top:1rem; display:flex; gap:.5rem; flex-wrap:wrap">
-          <a class="btn" href="#details" data-i18n="cta.details">Event Details</a>
-          <a class="btn" href="#rsvp" data-i18n="cta.rsvp">RSVP / Contact</a>
-        </div>
       </div>
     </section>
 
@@ -63,8 +59,15 @@
     <section class="section" id="getting-there">
       <h2 data-i18n="how.heading"></h2>
       <div class="card">
-        <h3 data-i18n="how.publicHeading"></h3>
-        <p data-i18n="how.publicBody"></p>
+        <h3 data-i18n="how.publicHeading1"></h3>
+        <p data-i18n="how.publicBody1"></p>
+        <h3 data-i18n="how.publicHeading2"></h3>
+        <h5 data-i18n="how.publicBody2"></h5>
+        <p data-i18n="how.publicSub21"></p>
+        <p data-i18n="how.publicSub22"></p>
+        <h5 data-i18n="how.publicBody3"></h5>
+        <p data-i18n="how.publicSub31"></p>
+        <p data-i18n="how.publicSub32"></p>
         <h3 data-i18n="how.driveHeading"></h3>
         <p data-i18n="how.driveBody"></p>
       </div>
@@ -116,29 +119,47 @@
     <div id="bankInfo" class="card bank-info">
       <h3 data-i18n="bank.heading">Bank Acount Info</h3>
       <p data-i18n="bank.sub">For those who cannot attend but would like to send their wishes:</p>
-      <div class="account">
-        <strong data-i18n="bank.name1">Account Holder: Wonhee Jo</strong><br>
-        <div class="account-line">
-          <span id="bank1" class="bank-number" data-i18n="bank.bank1"></span>
-          <button class="copy-btn" onclick="copyBank(this)">📋</button>
-        </div>
 
+      <!---신랑-->
+      <div class="account-drop">
+        <button class="drop-btn" type="button" onclick="toggleAccount('groom')" data-i18n="bank.title1"></button>
+        <div id="groom" class="drop-content">
+          <div class="account-line">
+            <p data-i18n="bank.name1"></p>
+            <span id="bank1" class="bank-number" data-i18n="bank.bank1"></span>
+            <button class="copy-btn" onclick="copyBank(this)">📋</button>
+          </div>
+          <div class="account-line">
+            <p data-i18n="bank.name2"></p>
+            <span id="bank2" class="bank-number" data-i18n="bank.bank2"></span>
+            <button class="copy-btn" onclick="copyBank(this)">📋</button>
+          </div>
+          <div class="account-line">
+            <p data-i18n="bank.name3"></p>
+            <span id="bank3" class="bank-number" data-i18n="bank.bank3"></span>
+            <button class="copy-btn" onclick="copyBank(this)">📋</button>
+          </div>
+        </div>
       </div>
-      <div class="account" style="margin-top:1rem">
-        <strong data-i18n="bank.name2">Account Holder: Averyl Chan</strong><br>
-        <div class="account-line">
-          <span id="bank2" class="bank-number" data-i18n="bank.bank2"></span>
-          <button class="copy-btn" type=button onclick="copyBank(this)">📋</button>
-        </div>
-        <div class="account-line">
-          <span id="bank3" class="bank-number" data-i18n="bank.bank3"></span>
-          <button class="copy-btn" type=button onclick="copyBank(this)">📋</button>
-        </div>
-        <div class="account-line">
-          <span id="bank4" class="bank-number" data-i18n="bank.bank4"></span>
-          <button class="copy-btn" type=button onclick="copyBank(this)">📋</button>
-        </div>
 
+      <!--신부-->
+      <div class="account-drop">
+        <button class="drop-btn" type="button" onclick="toggleAccount('bride')" data-i18n="bank.title2"></button>
+        <div id="bride" class="drop-content">
+          <div class="account-line">
+            <p data-i18n="bank.name4"></p>
+            <span id="bank4" class="bank-number" data-i18n="bank.bank4"></span>
+            <button class="copy-btn" type=button onclick="copyBank(this)">📋</button>
+          </div>
+          <div class="account-line">
+            <span id="bank5" class="bank-number" data-i18n="bank.bank5"></span>
+            <button class="copy-btn" type=button onclick="copyBank(this)">📋</button>
+          </div>
+          <div class="account-line">
+            <span id="bank6" class="bank-number" data-i18n="bank.bank6"></span>
+            <button class="copy-btn" type=button onclick="copyBank(this)">📋</button>
+          </div>
+        </div>
       </div>
     </div>
   </main>
