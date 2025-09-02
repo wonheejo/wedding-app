@@ -46,8 +46,8 @@ const I18N = {
       attendYes: "Attending",
       attendNo: "Not attending",
       mealLabel: "Meal Attendance",
-      mealYes: "Joining",
-      mealNo: "Not joining",
+      mealYes: "Will attend",
+      mealNo: "Will not attend",
       countLabel: "Number of guest",
       count1: "1 person",
       count2: "2 people",
@@ -55,8 +55,8 @@ const I18N = {
       count4: "4 people",
       count5: "5 people",
       afLabel: "After party Attendance",
-      afYes: "Joining",
-      afNo: "Not joining",
+      afYes: "Will attend",
+      afNo: "Will not attend",
       sendBtn: "Submit RSVP"
     },
     bank: {
