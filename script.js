@@ -30,7 +30,13 @@ const I18N = {
     },
     gallery: { heading: "Gallery", sub: "A few favorites — more to come!" },
     comments: { heading: "Leave a message", submit: "Post", note: "Comments are stored locally in your browser." },
-    rsvp: { heading: "RSVP / Contact", body: "Please message us on Kakao or email: wonheejo@gmail.com or averylchan@gmail.com" },
+    rsvp: {
+      heading: "RSVP / Contact",
+      buttonDetail: "Attending Detail",
+      body: "Please message us on Kakao or the following numbers:",
+      body2: "Wonhee's mobile - 01083556536",
+      body3: "Averyl's mobile - 01085156536",
+    },
     bank: {
       heading: "Bank Account Info",
       sub: "For those who cannot attend but would like to send their wishes:",
@@ -86,7 +92,14 @@ const I18N = {
     },
     gallery: { heading: "사진", sub: "몇 장 먼저 공개해요. 더 올라올 예정!" },
     comments: { heading: "메시지 남기기", submit: "등록", note: "댓글은 브라우저에만 저장됩니다." },
-    rsvp: { heading: "RSVP / 연락", body: "카카오톡 또는 이메일(wonheejo@gmail.com)로 연락 부탁드립니다." },
+    rsvp: {
+      heading: "RSVP / 연락",
+      buttonDetail: "참석여부",
+      body: "카카오톡 또는 아래 번호로 연락 부탁드립니다.",
+      body2: "조원희 - 01083556536",
+      body3: "지아 - 01085156536",
+    },
+
     bank: {
       heading: "계좌안내",
       sub: "참석이 어려우신 분들께서는 마음을 전달해 주시면 감사하겠습니다",
@@ -473,3 +486,94 @@ window.copyBank = copyBank;
   })();
 })();
 
+// === RSVP Modal ===
+(function () {
+  const modal = document.getElementById("rsvpModal");
+  const openBtn = document.getElementById("openRsvp");
+  const closeBtn = document.getElementById("closeRsvp");
+  const sendBtn = document.getElementById("sendRsvp");
+  if (!modal || !openBtn || !closeBtn || !sendBtn) return;
+
+  function openModal() { modal.classList.add("open"); modal.setAttribute("aria-hidden", "false"); }
+  function closeModal() { modal.classList.remove("open"); modal.setAttribute("aria-hidden", "true"); }
+
+  openBtn.addEventListener("click", openModal);
+  closeBtn.addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+  // segmented button toggles
+  modal.querySelectorAll(".segmented").forEach(group => {
+    group.addEventListener("click", (e) => {
+      const btn = e.target.closest(".opt");
+      if (!btn) return;
+      group.querySelectorAll(".opt").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+
+  function getSelected(name) {
+    const group = modal.querySelector(`.segmented[data-name="${name}"]`);
+    const active = group?.querySelector(".opt.active");
+    return active ? active.dataset.value : "";
+  }
+
+  function summaryText() {
+    const side = getSelected("side");
+    const name = document.getElementById("rsvpName").value.trim();
+    const attend = getSelected("attend");
+    const meal = getSelected("meal");
+    const count = document.getElementById("rsvpCount").value;
+    return `RSVP\n\n구분: ${side}\n성함: ${name}\n참석 여부: ${attend}\n식사 예정: ${meal}\n인원수: ${count}명`;
+  }
+
+  // helper: submit to Netlify Forms (application/x-www-form-urlencoded)
+  async function submitNetlifyForm(formName, dataObj) {
+    const formData = new URLSearchParams({ "form-name": formName, ...dataObj });
+    const resp = await fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString()
+    });
+    if (!resp.ok) throw new Error("Netlify form submit failed");
+  }
+
+  // in your existing IIFE where the modal is wired:
+  sendBtn.addEventListener("click", async () => {
+    const name = document.getElementById("rsvpName").value.trim();
+    if (!name) { alert("성함을 입력해주세요."); return; }
+
+    const data = {
+      side: getSelected("side"),           // "신랑측" | "신부측"
+      name,
+      attend: getSelected("attend"),       // "참석" | "불참석"
+      meal: getSelected("meal"),           // "참석" | "불참석"
+      count: document.getElementById("rsvpCount").value,
+      lang: (document.documentElement.lang || "en"),
+      timestamp: new Date().toISOString()
+    };
+
+    // optional: basic validation
+    if (!data.side || !data.attend || !data.meal) {
+      alert("모든 항목을 선택해주세요.");
+      return;
+    }
+
+    // UX: disable button during submit
+    sendBtn.disabled = true; sendBtn.textContent = "전송 중…";
+
+    try {
+      await submitNetlifyForm("rsvp", data);
+      // Success UX
+      sendBtn.textContent = "완료!";
+      setTimeout(() => { sendBtn.disabled = false; sendBtn.textContent = "참석정보 보내기"; }, 1200);
+      // Close modal & toast
+      setTimeout(() => { document.getElementById("rsvpModal").classList.remove("open"); }, 600);
+      // Optional: clear fields
+      document.getElementById("rsvpName").value = "";
+    } catch (e) {
+      console.error(e);
+      alert("전송에 실패했습니다. 잠시 후 다시 시도해주세요.");
+      sendBtn.disabled = false; sendBtn.textContent = "참석정보 보내기";
+    }
+  });
+})();

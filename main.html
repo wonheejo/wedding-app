@@ -124,8 +124,11 @@
     <!-- RSVP / Contact -->
     <section class="section" id="rsvp">
       <h2 data-i18n="rsvp.heading">RSVP / Contact</h2>
+      <button class="btn" type="button" id="openRsvp" data-i18n="rsvp.buttonDetail"></button>
       <p data-i18n="rsvp.body">Please message us on Kakao or email: <a
           href="mailto:hello@example.com">wonheejo@gmail.com</a>.</p>
+      <p data-i18n="rsvp.body2"></p>
+      <p data-i18n="rsvp.body3"></p>
     </section>
 
     <div id="bankInfo" class="card bank-info">
@@ -184,6 +187,72 @@
   <div class="modal" id="lightbox">
     <img alt="Expanded">
   </div>
+
+  <!-- RSVP Modal -->
+  <div class="modal" id="rsvpModal" aria-hidden="true">
+    <div class="card" style="max-width:560px; width:100%; position:relative;">
+      <button id="closeRsvp" aria-label="Close"
+        style="position:absolute; right:12px; top:10px; border:0; background:transparent; font-size:20px; cursor:pointer;">✕</button>
+      <h3 style="margin-top:0">참석 정보</h3>
+
+      <div class="field">
+        <label>신랑측 / 신부측</label>
+        <div class="segmented" data-name="side">
+          <button type="button" data-value="신랑측" class="opt active">신랑측</button>
+          <button type="button" data-value="신부측" class="opt">신부측</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="rsvpName">성함</label>
+        <input id="rsvpName" type="text" placeholder="성함을 입력해주세요" />
+      </div>
+
+      <div class="field">
+        <label>참석 여부</label>
+        <div class="segmented" data-name="attend">
+          <button type="button" data-value="참석" class="opt active">참석</button>
+          <button type="button" data-value="불참석" class="opt">불참석</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>식사 예정</label>
+        <div class="segmented" data-name="meal">
+          <button type="button" data-value="참석" class="opt active">참석</button>
+          <button type="button" data-value="불참석" class="opt">불참석</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="rsvpCount">인원수</label>
+        <select id="rsvpCount">
+          <option value="1">1명</option>
+          <option value="2">2명</option>
+          <option value="3">3명</option>
+          <option value="4">4명</option>
+          <option value="5">5명</option>
+        </select>
+      </div>
+
+      <button class="btn" id="sendRsvp" type="button" style="margin-top:.5rem;">참석정보 보내기</button>
+      <p class="lead" style="font-size:.85rem; margin-top:.5rem; color:var(--muted);">이메일이 열리며 내용이 자동 채워집니다.</p>
+    </div>
+  </div>
+
+  <!-- netlify form -->
+  <form name="rsvp" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="text" name="side">
+    <input type="text" name="name">
+    <input type="text" name="attend">
+    <input type="text" name="meal">
+    <input type="number" name="count">
+    <input type="text" name="lang">
+    <input type="text" name="timestamp">
+    <!-- honeypot -->
+    <input type="text" name="bot-field">
+  </form>
+
 
   <!-- Background music -->
   <audio id="bgm" src="assets/Kids.mp3" preload="auto" loop playsinline></audio>
