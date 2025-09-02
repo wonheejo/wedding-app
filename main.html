@@ -192,7 +192,7 @@
   <div class="modal" id="rsvpModal" aria-hidden="true">
     <div class="card" style="max-width:560px; width:100%; position:relative;">
       <button id="closeRsvp" aria-label="Close"
-        style="position:absolute; right:12px; top:10px; border:0; background:transparent; font-size:20px; cursor:pointer;">✕</button>
+        style="position:absolute; right:12px; top:10px; border:0; background:transparent; font-size:30px; cursor:pointer;">✕</button>
       <h3 style="margin-top:0">참석 정보</h3>
 
       <div class="field">
@@ -236,12 +236,12 @@
       </div>
 
       <button class="btn" id="sendRsvp" type="button" style="margin-top:.5rem;">참석정보 보내기</button>
-      <p class="lead" style="font-size:.85rem; margin-top:.5rem; color:var(--muted);">이메일이 열리며 내용이 자동 채워집니다.</p>
     </div>
   </div>
 
   <!-- netlify form -->
   <form name="rsvp" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="rsvp">
     <input type="text" name="side">
     <input type="text" name="name">
     <input type="text" name="attend">
