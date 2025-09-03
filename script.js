@@ -28,7 +28,7 @@ const I18N = {
       driveHeading: "By car",
       driveBody: "On-site parking available (free up to 3 hours)."
     },
-    gallery: { heading: "Gallery", sub: "A few favorites — more to come!" },
+    gallery: { heading: "Wedding Gallery", sub: "A few favorites — more to come!" },
     comments: { heading: "Leave a message", submit: "Post", note: "Comments are stored locally in your browser." },
     rsvp: {
       heading: "RSVP / Contact",
@@ -103,7 +103,7 @@ const I18N = {
       publicHeading1: "지하철",
       publicBody1: "1호선 시청역 3번 출구에서 도보로 약 200미터 또는 5호선 광화문역 6번 출구에서 도보로 약 100미터.",
       publicHeading2: "버스",
-      publicBody2: "버스 서울신문사 정류장 하차 후 건너편.",
+      publicBody2: "서울신문사 정류장 하차 후 건너편.",
       publicSub21: "간선버스 101, 150, 501, 506, 708",
       publicSub22: "지선버스 1711, 7016",
       publicBody3: "프레스센터 정류장 하차 후 건너편",
@@ -112,7 +112,10 @@ const I18N = {
       driveHeading: "자가용",
       driveBody: "하이파킹 코리아나호텔 주차장."
     },
-    gallery: { heading: "사진", sub: "몇 장 먼저 공개해요. 더 올라올 예정!" },
+    gallery: {
+      heading: "웨딩 갤러리",
+      sub: "몇 장 먼저 공개해요. 더 올라올 예정!"
+    },
     comments: { heading: "메시지 남기기", submit: "등록", note: "댓글은 브라우저에만 저장됩니다." },
     rsvp: {
       heading: "RSVP / 연락",
