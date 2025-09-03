@@ -32,7 +32,7 @@ const I18N = {
     comments: { heading: "Leave a message", submit: "Post", note: "Comments are stored locally in your browser." },
     rsvp: {
       heading: "RSVP / Contact",
-      buttonDetail: "Attending Detail",
+      buttonDetail: "Click here for RSVP",
       body: "Please message us on Kakao or the following numbers:",
       body2: "Wonhee's mobile - 01083556536",
       body3: "Averyl's mobile - 01085156536",
@@ -119,7 +119,7 @@ const I18N = {
     comments: { heading: "메시지 남기기", submit: "등록", note: "댓글은 브라우저에만 저장됩니다." },
     rsvp: {
       heading: "RSVP / 연락",
-      buttonDetail: "참석여부",
+      buttonDetail: "참석여부 전달하기",
       body: "카카오톡 또는 아래 번호로 연락 부탁드립니다.",
       body2: "조원희 - 01083556536",
       body3: "지아 - 01085156536",
