@@ -72,6 +72,7 @@
       <div class="card">
         <h3 data-i18n="how.publicHeading1"></h3>
         <p data-i18n="how.publicBody1"></p>
+        <p data-i18n="how.publicBody1_1"></p>
         <h3 data-i18n="how.publicHeading2"></h3>
         <h5 data-i18n="how.publicBody2"></h5>
         <p data-i18n="how.publicSub21"></p>
@@ -81,6 +82,7 @@
         <p data-i18n="how.publicSub32"></p>
         <h3 data-i18n="how.driveHeading"></h3>
         <p data-i18n="how.driveBody"></p>
+        <p data-i18n="how.driveBody2"></p>
       </div>
     </section>
 
@@ -104,19 +106,6 @@
         <img src="assets/img14.jpg" alt="Gallery 12">
         <img src="assets/img15.jpg" alt="Gallery 13">
         <img src="assets/img1_compressed.jpg" alt="Gallery 14">
-      </div>
-    </section>
-
-    <!-- Comments -->
-    <section class="section" id="comments">
-      <h2 data-i18n="comments.heading">Leave a message</h2>
-      <form class="comment-form" id="commentForm">
-        <input id="nameInput" placeholder="Your name" required />
-        <textarea id="msgInput" rows="2" placeholder="Your message..." required></textarea>
-        <button type="submit" class="btn" data-i18n="comments.submit">Post</button>
-      </form>
-      <div id="commentsList"></div>
-      <div class="badge" style="margin-top:.5rem" data-i18n="comments.note">Comments are stored locally in your browser.
       </div>
     </section>
 
@@ -177,6 +166,20 @@
       </div>
     </div>
   </main>
+
+
+  <!-- Comments -->
+  <section class="section" id="comments">
+    <h2 data-i18n="comments.heading">Leave a message</h2>
+    <form class="comment-form" id="commentForm">
+      <input id="nameInput" placeholder="Your name" required />
+      <textarea id="msgInput" rows="2" placeholder="Your message..." required></textarea>
+      <button type="submit" class="btn" data-i18n="comments.submit">Post</button>
+    </form>
+    <div id="commentsList"></div>
+    <div class="badge" style="margin-top:.5rem" data-i18n="comments.note">Comments are stored locally in your browser.
+    </div>
+  </section>
 
   <footer class="footer">
     <div>&copy; <span id="year"></span> <span data-i18n="footer.names">Wonhee & Averyl</span></div>

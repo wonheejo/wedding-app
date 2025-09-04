@@ -23,10 +23,19 @@ const I18N = {
     where: { heading: "Where", venueName: "Koreana Hotel", venueAddr: "Koreana Hotel, 135 Sejong-daero, Jung District, Seoul", map: "Open in Google Maps" },
     how: {
       heading: "How to get there",
-      publicHeading: "By public transport",
-      publicBody: "Subway: Line 2 City Hall, Exit 4 or Line 5 GwangHwaMoon Square, Exit 6. Bus: Seoul Sinmoon or Press Center Stop.",
+      publicHeading1: "Subway",
+      publicBody1: "Line 2: City Hall, Exit 4",
+      publicBody1_1: "Line 5: Gwanghwamoon Square, Exit 6",
+      publicHeading2: "Bus",
+      publicBody2: "Seoul Sinmoon Station",
+      publicSub21: "Blue bus: 101, 150, 501, 506, 708",
+      publicSub22: "Green bus: 1711, 7016",
+      publicBody3: "Press Center Stop",
+      publicSub31: "Blue bus: 402, 709",
+      publicSub32: "Green bus: 799, Jongro09, Jongro11",
       driveHeading: "By car",
-      driveBody: "On-site parking available (free up to 3 hours)."
+      driveBody: "Hi-parking Koreana hotel (free parking)",
+      driveBody2: "Gwanghwamoon D-tower (free parking)"
     },
     gallery: { heading: "Wedding Gallery", sub: "A few favorites — more to come!" },
     comments: { heading: "Leave a message", submit: "Post", note: "Comments are stored locally in your browser." },
@@ -101,16 +110,18 @@ const I18N = {
     how: {
       heading: "오시는 길",
       publicHeading1: "지하철",
-      publicBody1: "1호선 시청역 3번 출구에서 도보로 약 200미터 또는 5호선 광화문역 6번 출구에서 도보로 약 100미터.",
+      publicBody1: "1호선 시청역 3번 출구에서 도보로 약 200미터",
+      publicBody1_1: "5호선 광화문역 6번 출구에서 도보로 약 100미터",
       publicHeading2: "버스",
       publicBody2: "서울신문사 정류장 하차 후 건너편.",
-      publicSub21: "간선버스 101, 150, 501, 506, 708",
-      publicSub22: "지선버스 1711, 7016",
+      publicSub21: "간선버스: 101, 150, 501, 506, 708",
+      publicSub22: "지선버스: 1711, 7016",
       publicBody3: "프레스센터 정류장 하차 후 건너편",
-      publicSub31: "간선버스 402, 709",
-      publicSub32: "지선버스 799, 종로09, 종로11",
+      publicSub31: "간선버스: 402, 709",
+      publicSub32: "지선버스: 799, 종로09, 종로11",
       driveHeading: "자가용",
-      driveBody: "하이파킹 코리아나호텔 주차장."
+      driveBody: "하이파킹 코리아나호텔 주차장 (무료주차)",
+      driveBody2: "시위로 인해 혼잡할 경우: 광화문 디타워 (무료주차)"
     },
     gallery: {
       heading: "웨딩 갤러리",
