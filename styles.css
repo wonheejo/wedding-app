@@ -707,3 +707,25 @@ img {
     margin-right: auto;
   }
 }
+
+#mealOptionsContainer .meal-row {
+  margin: 0.35rem 0;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+#mealOptionsContainer .meal-row label {
+  min-width: 90px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+#mealOptionsContainer select {
+  flex: 1;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font: inherit;
+}

@@ -64,6 +64,9 @@ const I18N = {
       count3: "3 people",
       count4: "4 people",
       count5: "5 people",
+      labelPrefix: "Guest",
+      choicesLabel: "Meal choices",
+      menus: ["Beef", "Fish", "Beef + Fish"],
       afLabel: "After party Attendance",
       afYes: "Will attend",
       afNo: "Will not attend",
@@ -156,6 +159,9 @@ const I18N = {
       count3: "3명",
       count4: "4명",
       count5: "5명",
+      labelPrefix: "인원",
+      choicesLabel: "식사 메뉴 선택",
+      menus: ["소고기", "생선", "소고기 + 생선"],
       afLabel: "에프터파티 참석 여부",
       afYes: "참석",
       afNo: "불참석",
@@ -554,7 +560,8 @@ window.copyBank = copyBank;
   const openBtn = document.getElementById("openRsvp");
   const closeBtn = document.getElementById("closeRsvp");
   const sendBtn = document.getElementById("sendRsvp");
-  if (!modal || !openBtn || !closeBtn || !sendBtn) return;
+  const countSel = document.getElementById("rsvpCount");
+  if (!modal || !openBtn || !closeBtn || !sendBtn || !countSel) return;
 
   function openModal() { modal.classList.add("open"); modal.setAttribute("aria-hidden", "false"); }
   function closeModal() { modal.classList.remove("open"); modal.setAttribute("aria-hidden", "true"); }
@@ -570,8 +577,41 @@ window.copyBank = copyBank;
       if (!btn) return;
       group.querySelectorAll(".opt").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+
+      // When attendance changes, show/hide meal selects
+      if (group.dataset.name === "attend") {
+        const val = btn.dataset.value || "";
+        if (val.includes("불참") || val.toLowerCase().includes("not")) {
+          renderMealSelectors(0);
+        } else {
+          renderMealSelectors(parseInt(countSel.value || "0", 10));
+        }
+      }
     });
   });
+
+  // When count changes, (re)render meal selects if attending
+  countSel.addEventListener("change", () => {
+    const attendVal = modal.querySelector('.segmented[data-name="attend"] .opt.active')?.dataset.value || "";
+    if (attendVal.includes("불참") || attendVal.toLowerCase().includes("not")) {
+      renderMealSelectors(0);
+    } else {
+      renderMealSelectors(parseInt(countSel.value || "0", 10));
+    }
+  });
+
+  // Initial render for meals
+  (function initMeals() {
+    const attendVal = modal.querySelector('.segmented[data-name="attend"] .opt.active')?.dataset.value || "";
+    const n = parseInt(countSel.value || "0", 10);
+    renderMealSelectors((attendVal.includes("불참") || attendVal.toLowerCase().includes("not")) ? 0 : n);
+  })();
+
+  function getSelected(name) {
+    const group = modal.querySelector(`.segmented[data-name="${name}"]`);
+    const active = group?.querySelector(".opt.active");
+    return active ? active.dataset.value : "";
+  }
 
   function getSelected(name) {
     const group = modal.querySelector(`.segmented[data-name="${name}"]`);
@@ -601,41 +641,103 @@ window.copyBank = copyBank;
 
   // in your existing IIFE where the modal is wired:
   sendBtn.addEventListener("click", async () => {
+    const dict = currentRsvpDict();
     const name = document.getElementById("rsvpName").value.trim();
-    if (!name) { alert("성함을 입력해주세요."); return; }
-
-    const data = {
-      side: getSelected("side"),           // "신랑측" | "신부측"
-      name,
-      attend: getSelected("attend"),       // "참석" | "불참석"
-      meal: getSelected("meal"),           // "참석" | "불참석"
-      count: document.getElementById("rsvpCount").value,
-      lang: (document.documentElement.lang || "en"),
-      timestamp: new Date().toISOString()
-    };
-
-    // optional: basic validation
-    if (!data.side || !data.attend || !data.meal) {
-      alert("모든 항목을 선택해주세요.");
+    if (!name) {
+      alert((document.documentElement.lang || "en").startsWith("ko") ? "성함을 입력해주세요." : "Please enter your name.");
       return;
     }
 
-    // UX: disable button during submit
-    sendBtn.disabled = true; sendBtn.textContent = "전송 중…";
+    const data = {
+      side: getSelected("side"),
+      name,
+      attend: getSelected("attend"),
+      meal: getSelected("meal"),     // your overall meal attendance toggle
+      count: countSel.value,
+      lang: (document.documentElement.lang || "en"),
+      timestamp: new Date().toISOString(),
+      ...collectMealChoices()          // meal_1, meal_2, ...
+    };
+
+    // Validate per-guest menus only if attending
+    const attending = (data.attend.includes("참석") || data.attend.toLowerCase().includes("attend"));
+    const n = parseInt(data.count || "0", 10);
+    if (attending && n > 0) {
+      for (let i = 1; i <= n; i++) {
+        if (!data[`meal_${i}`]) {
+          alert((document.documentElement.lang || "en").startsWith("ko")
+            ? `인원 ${i}의 식사 메뉴를 선택해주세요.`
+            : `Please select a meal for guest ${i}.`);
+          return;
+        }
+      }
+    }
+
+    // UX
+    sendBtn.disabled = true;
+    sendBtn.textContent = (document.documentElement.lang || "en").startsWith("ko") ? "전송 중…" : "Sending…";
+
 
     try {
       await submitNetlifyForm("rsvp", data);
-      // Success UX
-      sendBtn.textContent = "완료!";
-      setTimeout(() => { sendBtn.disabled = false; sendBtn.textContent = "참석정보 보내기"; }, 1200);
-      // Close modal & toast
-      setTimeout(() => { document.getElementById("rsvpModal").classList.remove("open"); }, 600);
-      // Optional: clear fields
+      sendBtn.textContent = (document.documentElement.lang || "en").startsWith("ko") ? "완료!" : "Done!";
+      setTimeout(() => { sendBtn.disabled = false; sendBtn.textContent = dict.sendBtn || "Submit RSVP"; }, 1200);
+      setTimeout(() => { modal.classList.remove("open"); }, 600);
       document.getElementById("rsvpName").value = "";
     } catch (e) {
       console.error(e);
-      alert("전송에 실패했습니다. 잠시 후 다시 시도해주세요.");
-      sendBtn.disabled = false; sendBtn.textContent = "참석정보 보내기";
+      alert((document.documentElement.lang || "en").startsWith("ko")
+        ? "전송에 실패했습니다. 잠시 후 다시 시도해주세요."
+        : "Submission failed. Please try again.");
+      sendBtn.disabled = false; sendBtn.textContent = dict.sendBtn || "Submit RSVP";
     }
   });
 })();
+
+function collectMealChoices() {
+  const selects = document.querySelectorAll('#mealOptionsContainer select[name^="meal_"]');
+  const out = {};
+  let i = 1;
+  selects.forEach(sel => { out[`meal_${i++}`] = sel.value; });
+  return out;
+}
+
+function currentRsvpDict() {
+  const lang = (document.documentElement.lang || "en").toLowerCase().startsWith("ko") ? "ko" : "en";
+  return I18N[lang]?.rsvp || I18N.en.rsvp;
+}
+
+function renderMealSelectors(n) {
+  const wrap = document.getElementById("mealOptions");
+  const container = document.getElementById("mealOptionsContainer");
+  if (!wrap || !container) return;
+
+  const dict = currentRsvpDict();
+
+  container.innerHTML = "";
+  for (let i = 1; i <= n; i++) {
+    const row = document.createElement("div");
+    row.className = "meal-row";
+
+    const lab = document.createElement("label");
+    lab.setAttribute("for", `meal_${i}`);
+    lab.textContent = `${dict.labelPrefix} ${i}`;
+
+    const sel = document.createElement("select");
+    sel.id = `meal_${i}`;
+    sel.name = `meal_${i}`;
+
+    dict.menus.forEach(m => {
+      const opt = document.createElement("option");
+      opt.value = m;
+      opt.textContent = m;
+      sel.appendChild(opt);
+    });
+
+    row.appendChild(lab);
+    row.appendChild(sel);
+    container.appendChild(row);
+  }
+
+  wrap.style.display = n > 0 ? "block" : "none";
+}
