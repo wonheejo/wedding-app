@@ -659,6 +659,18 @@ window.copyBank = copyBank;
       ...collectMealChoices()          // meal_1, meal_2, ...
     };
 
+    // 👇 Collect guest meals
+    const meals = collectMealChoices();
+
+    // 👇 Add readable summary
+    data.meal_summary = Object.entries(meals)
+      .map(([k, v]) => `${k.replace('meal_', 'Guest ')}: ${v}`)
+      .join(', ');
+
+    // 👇 Merge meal_1, meal_2… into data as separate fields
+    Object.assign(data, meals);
+
+
     // Validate per-guest menus only if attending
     const attending = (data.attend.includes("참석") || data.attend.toLowerCase().includes("attend"));
     const n = parseInt(data.count || "0", 10);
