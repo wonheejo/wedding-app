@@ -20,7 +20,13 @@ const I18N = {
       body2: "Reception to follow",
       body3: "6:00 PM After party"
     },
-    where: { heading: "Where", venueName: "Koreana Hotel", venueAddr: "Koreana Hotel, 135 Sejong-daero, Jung District, Seoul", map: "Open in Google Maps" },
+    where: {
+      heading: "Where",
+      venueName: "Koreana Hotel",
+      venueDetail: "Rooftop",
+      venueAddr: "Koreana Hotel, 135 Sejong-daero, Jung District, Seoul",
+      map: "Open in Google Maps"
+    },
     how: {
       heading: "How to get there",
       publicHeading1: "Subway",
@@ -113,7 +119,13 @@ const I18N = {
       body2: "이후 피로연이 이어집니다",
       body3: "피로연 이후 2부가 이어집니다",
     },
-    where: { heading: "장소", venueName: "코리아나 호텔", venueAddr: "서울 중구 세종대로 135", map: "구글지도 열기" },
+    where: {
+      heading: "장소",
+      venueName: "코리아나 호텔",
+      venueDetail: "루프탑 옥상",
+      venueAddr: "서울 중구 세종대로 135",
+      map: "구글지도 열기"
+    },
     how: {
       heading: "오시는 길",
       publicHeading1: "지하철",
