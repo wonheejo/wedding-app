@@ -32,11 +32,11 @@
       <!-- <img src="assets/img1_compressed.jpg" alt="Couple photo"> 
     -->
       <div>
-        <div class="kicker" data-i18n="hero.kicker">We’re getting married</div>
-        <h1 data-i18n="hero.title">Alex & Jina</h1>
-        <div class="date" data-i18n="hero.date">Saturday, October 18, 2025 • 2:00 PM</div>
-        <div id="miniCal" class="mini-cal" aria-label="Wedding calendar"></div>
-        <div class="countdown" id="countdown"></div>
+        <div class="kicker" data-i18n="hero.kicker"></div>
+        <h1 data-i18n="hero.title">/h1>
+          <div class="date" data-i18n="hero.date"></div>
+          <div id="miniCal" class="mini-cal" aria-label="Wedding calendar"></div>
+          <div class="countdown" id="countdown"></div>
       </div>
     </section>
 
@@ -177,13 +177,11 @@
   <section class="section" id="comments">
     <h2 data-i18n="comments.heading">Leave a message</h2>
     <form class="comment-form" id="commentForm">
-      <input id="nameInput" placeholder="Your name" required />
-      <textarea id="msgInput" rows="2" placeholder="Your message..." required></textarea>
+      <input id="nameInput" type="text" placeholder="Your name" data-i18n-placeholder="comments.namePh" />
+      <textarea id="msgInput" rows="2" placeholder="Your message..." data-i18n-placeholder="comments.msgPh"></textarea>
       <button type="submit" class="btn" data-i18n="comments.submit">Post</button>
     </form>
     <div id="commentsList"></div>
-    <div class="badge" style="margin-top:.5rem" data-i18n="comments.note">Comments are stored locally in your browser.
-    </div>
   </section>
 
   <footer class="footer">
@@ -282,10 +280,13 @@
 
 
   <!-- Background music -->
+
+
   <audio id="bgm" src="assets/aruariandance.mp4" preload="auto" loop playsinline></audio>
   <button id="audioToggle" class="audio-btn" type="button" aria-pressed="false" aria-label="Play Music">🔇</button>
-
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="script.js?v=3"></script>
+
 
 </body>
 

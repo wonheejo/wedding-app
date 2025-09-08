@@ -729,3 +729,12 @@ img {
   border-radius: 10px;
   font: inherit;
 }
+
+#commentList {
+  margin-top: .5rem;
+  text-align: left;
+}
+
+.comment .body {
+  white-space: pre-wrap;
+}

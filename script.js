@@ -44,7 +44,11 @@ const I18N = {
       driveBody2: "Gwanghwamoon D-tower (free parking)"
     },
     gallery: { heading: "Wedding Gallery", sub: "A few favorites — more to come!" },
-    comments: { heading: "Leave a message", submit: "Post", note: "Comments are stored locally in your browser." },
+    comments: {
+      namePh: "Input name",
+      msgPh: "Leave a message",
+      submit: "Post"
+    },
     rsvp: {
       heading: "RSVP / Contact",
       buttonDetail: "Click here for RSVP",
@@ -146,7 +150,11 @@ const I18N = {
       heading: "웨딩 갤러리",
       sub: "몇 장 먼저 공개해요. 더 올라올 예정!"
     },
-    comments: { heading: "메시지 남기기", submit: "등록", note: "댓글은 브라우저에만 저장됩니다." },
+    comments: {
+      namePh: "Input name",
+      msgPh: "메시지 남기기",
+      submit: "등록"
+    },
     rsvp: {
       heading: "RSVP / 연락",
       buttonDetail: "참석여부 전달하기",
@@ -767,3 +775,93 @@ function renderMealSelectors(n) {
 
   wrap.style.display = n > 0 ? "block" : "none";
 }
+
+// ===== Global comments via Supabase =====
+const SUPABASE_URL = "https://jwhsbyeyfoanuwrniljk.supabase.co";     // <-- replace
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3aHNieWV5Zm9hbnV3cm5pbGprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczMTg3NjAsImV4cCI6MjA3Mjg5NDc2MH0.08g3uC-BygItHBW5zqw9FmHX5CpUI98wtB5TCigLM04";                   // <-- replace
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const commentList = document.getElementById("commentList");
+const commentForm = document.getElementById("commentForm");
+const cName = document.getElementById("cName");
+const cMsg = document.getElementById("cMsg");
+
+function fmtDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleString(document.documentElement.lang || "en", {
+    year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+  });
+}
+
+function renderComments(items) {
+  commentList.innerHTML = items.map(c => `
+    <div class="comment">
+      <div class="meta">${c.name} • ${fmtDate(c.created_at)}</div>
+      <div class="body">${escapeHtml(c.message).replace(/\n/g, "<br>")}</div>
+    </div>
+  `).join("");
+}
+
+// basic escape to avoid HTML injection
+function escapeHtml(s) {
+  const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+  return String(s).replace(/[&<>"']/g, m => map[m]);
+}
+
+async function loadComments() {
+  const { data, error } = await supabaseClient
+    .from("comments")
+    .select("*")
+    .eq("page", "main")
+    .order("created_at", { ascending: false })
+    .limit(100);
+  if (error) { console.error(error); return; }
+  renderComments(data || []);
+}
+
+// live updates (optional, nice!)
+supabaseClient.channel('comments-channel')
+  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'comments' }, payload => {
+    // Prepend new comment
+    const c = payload.new;
+    const current = commentList.children.length ? commentList.innerHTML : "";
+    commentList.innerHTML = `
+      <div class="comment">
+        <div class="meta">${c.name} • ${fmtDate(c.created_at)}</div>
+        <div class="body">${escapeHtml(c.message).replace(/\n/g, "<br>")}</div>
+      </div>
+    ` + current;
+  })
+  .subscribe();
+
+commentForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const name = (cName.value || "").trim();
+  const message = (cMsg.value || "").trim();
+  if (!name || !message) {
+    alert((document.documentElement.lang || "en").startsWith("ko") ? "이름과 메시지를 입력해주세요." : "Please enter your name and message.");
+    return;
+  }
+
+  // disable button while sending
+  const btn = commentForm.querySelector("button[type=submit]");
+  btn.disabled = true; btn.textContent = (document.documentElement.lang || "en").startsWith("ko") ? "전송 중…" : "Posting…";
+
+  const { error } = await supabaseClient.from("comments").insert({
+    name, message, page: "main", lang: (document.documentElement.lang || "en")
+  });
+
+  btn.disabled = false; btn.textContent = (document.documentElement.lang || "en").startsWith("ko") ? "등록" : "Post";
+
+  if (error) {
+    console.error(error);
+    alert((document.documentElement.lang || "en").startsWith("ko") ? "등록에 실패했습니다." : "Failed to post.");
+    return;
+  }
+  cMsg.value = "";
+  // list updates automatically via realtime; as a fallback:
+  // loadComments();
+});
+
+// initial load
+loadComments();
