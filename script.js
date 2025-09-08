@@ -785,36 +785,36 @@ const SUPABASE_URL = "https://jwhsbyeyfoanuwrniljk.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3aHNieWV5Zm9hbnV3cm5pbGprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczMTg3NjAsImV4cCI6MjA3Mjg5NDc2MH0.08g3uC-BygItHBW5zqw9FmHX5CpUI98wtB5TCigLM04";
 window.sb ||= window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const seenIds = new Set();
+// keep your dedupe set
+const seenIds = window.__seenComments || new Set();
+window.__seenComments = seenIds;
 
 (function initGlobalComments() {
   window.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("commentForm");
     const nameI = document.getElementById("nameInput");
     const msgI = document.getElementById("msgInput");
+    const list = document.getElementById("commentList");
+    const pagEl = document.getElementById("commentPagination");
 
-    // IMPORTANT: look up the list *inside* each function so it can’t be stale/null
-    const getList = () => document.getElementById("commentList");
-
-    if (!form || !nameI || !msgI || !getList()) {
-      console.log("[comments] Skipping: UI not found on this page", { path: location.pathname });
+    if (!form || !nameI || !msgI || !list) {
+      // Not on the page that has comments; skip init.
       return;
     }
     if (!window.sb) { console.error("[comments] Supabase client not initialized"); return; }
 
+    // === “globals” for pagination (scoped to this IIFE) ===
+    let currentPage = 1;
+    const pageSize = 10;
+    let totalPages = 1; // computed on load
+
+    // helpers
     const esc = s => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
     const fmt = iso => new Date(iso).toLocaleString(document.documentElement.lang || "en",
       { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
 
-    async function loadCommentsSB() {
-      const list = getList(); if (!list) return;
-      const { data, error } = await sb
-        .from("comments").select("*")
-        .eq("page", "main")
-        .order("created_at", { ascending: false })
-        .limit(100);
-      if (error) { console.error("[comments] Load error:", error); return; }
-      list.innerHTML = (data || []).map(c => `
+    function renderList(items) {
+      list.innerHTML = (items || []).map(c => `
         <div class="comment">
           <div class="meta">${esc(c.name)} • ${fmt(c.created_at)}</div>
           <div class="body">${esc(c.message).replace(/\n/g, "<br>")}</div>
@@ -822,24 +822,76 @@ const seenIds = new Set();
       `).join("");
     }
 
-    // Optional realtime
-    try {
-      sb.channel("comments-realtime")
+    function renderPagination() {
+      if (!pagEl) return;
+      let html = "";
+
+      // Prev
+      html += `<button type="button" ${currentPage <= 1 ? "disabled" : ""} data-act="prev">Prev</button>`;
+      // Page indicator
+      html += `<span> Page ${currentPage} of ${totalPages} </span>`;
+      // Next
+      html += `<button type="button" ${currentPage >= totalPages ? "disabled" : ""} data-act="next">Next</button>`;
+
+      pagEl.innerHTML = html;
+
+      // wire the buttons
+      pagEl.querySelector('[data-act="prev"]')?.addEventListener("click", () => {
+        if (currentPage > 1) {
+          loadCommentsSB(currentPage - 1);
+        }
+      });
+      pagEl.querySelector('[data-act="next"]')?.addEventListener("click", () => {
+        if (currentPage < totalPages) {
+          loadCommentsSB(currentPage + 1);
+        }
+      });
+    }
+
+    async function loadCommentsSB(page = 1) {
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+
+      // ask for exact total count so we can compute total pages
+      const { data, error, count } = await sb
+        .from("comments")
+        .select("*", { count: "exact" })
+        .eq("page", "main")
+        .order("created_at", { ascending: false })
+        .range(from, to);
+
+      if (error) { console.error("[comments] Load error:", error); return; }
+
+      currentPage = page;
+      totalPages = Math.max(1, Math.ceil((count || 0) / pageSize));
+
+      renderList(data);
+      renderPagination();
+    }
+
+    // Realtime (only prepend if we’re on page 1)
+    if (!window.__commentsRealtime) {
+      window.__commentsRealtime = sb.channel("comments-realtime")
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "comments" }, ({ new: c }) => {
-          // ⬇️ add this line at the top of the handler
-          if (seenIds.has(c.id)) return;  // skip our own freshly-inserted row
-
-          // …then your existing prepend code:
+          if (seenIds.has(c.id)) return; // skip our own fresh insert
+          if (currentPage !== 1) return; // only show on the first page live
           const item = `
-      <div class="comment">
-        <div class="meta">${esc(c.name)} • ${fmt(c.created_at)}</div>
-        <div class="body">${esc(c.message).replace(/\n/g, "<br>")}</div>
-      </div>`;
-          const list = document.getElementById("commentList");
-          if (list) list.innerHTML = item + list.innerHTML;
-        })
-    } catch { }
+            <div class="comment">
+              <div class="meta">${esc(c.name)} • ${fmt(c.created_at)}</div>
+              <div class="body">${esc(c.message).replace(/\n/g, "<br>")}</div>
+            </div>`;
+          list.innerHTML = item + list.innerHTML;
 
+          // If we overflow page 1 (more than pageSize), trim the last
+          const children = list.querySelectorAll(".comment");
+          if (children.length > pageSize) {
+            list.removeChild(children[children.length - 1]);
+          }
+        })
+        .subscribe();
+    }
+
+    // Submit handler
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const name = (nameI.value || "").trim();
@@ -848,6 +900,7 @@ const seenIds = new Set();
         alert((document.documentElement.lang || "en").startsWith("ko") ? "이름과 메시지를 입력해주세요." : "Please enter your name and message.");
         return;
       }
+
       const btn = form.querySelector('button[type="submit"]');
       const orig = btn.textContent;
       btn.disabled = true;
@@ -856,8 +909,8 @@ const seenIds = new Set();
       const { data, error } = await sb
         .from("comments")
         .insert({ name, message, page: "main", lang: (document.documentElement.lang || "en") })
-        .select().single();
-      seenIds.add(data.id);
+        .select()
+        .single();
 
       btn.disabled = false;
       btn.textContent = orig;
@@ -868,17 +921,29 @@ const seenIds = new Set();
         return;
       }
 
-      // prepend
-      const list = getList(); if (list) {
-        list.innerHTML = `
+      // Avoid double-prepend with realtime:
+      seenIds.add(data.id);
+
+      // If we’re on page 1, prepend immediately; otherwise just leave it
+      if (currentPage === 1) {
+        const item = `
           <div class="comment">
             <div class="meta">${esc(data.name)} • ${fmt(data.created_at)}</div>
             <div class="body">${esc(data.message).replace(/\n/g, "<br>")}</div>
-          </div>` + list.innerHTML;
+          </div>`;
+        list.innerHTML = item + list.innerHTML;
+
+        // Trim to pageSize
+        const children = list.querySelectorAll(".comment");
+        if (children.length > pageSize) {
+          list.removeChild(children[children.length - 1]);
+        }
       }
+
       msgI.value = "";
     });
 
-    loadCommentsSB();
+    // Initial load
+    loadCommentsSB(1);
   });
 })();
