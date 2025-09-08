@@ -800,7 +800,7 @@ function fmtDate(iso) {
 window.addEventListener("DOMContentLoaded", () => {
   // Grab elements AFTER DOM is ready
   const commentForm = document.getElementById("commentForm");
-  const commentList = document.getElementById("commentsList");
+  const commentList = document.getElementById("commentList");
   const cName = document.getElementById("nameInput");
   const cMsg = document.getElementById("msgInput");
 
