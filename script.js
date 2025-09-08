@@ -781,12 +781,12 @@ const SUPABASE_URL = "https://jwhsbyeyfoanuwrniljk.supabase.co";     // <-- repl
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3aHNieWV5Zm9hbnV3cm5pbGprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczMTg3NjAsImV4cCI6MjA3Mjg5NDc2MH0.08g3uC-BygItHBW5zqw9FmHX5CpUI98wtB5TCigLM04";                   // <-- replace
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const commentList = document.getElementById("commentㄴList");
+const commentList = document.getElementById("commentsList");
 const commentForm = document.getElementById("commentForm");
 const cName = document.getElementById("nameInput");
 const cMsg = document.getElementById("msgInput");
 
-if (!commentForm || !commentList || !cName || !cMsg) {
+if (!commentForm || !commentsList || !cName || !cMsg) {
   console.error("Comment elements not found");
 }
 
