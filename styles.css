@@ -731,7 +731,10 @@ img {
 }
 
 #commentList {
-  margin-top: .5rem;
+  width: 80%;
+  max-width: 400px;
+  margin: .5rem auto 0;
+  /* center under the form */
   text-align: left;
 }
 

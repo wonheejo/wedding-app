@@ -271,6 +271,8 @@ function initCountdown() {
   // Target date (adjust as needed)
   const target = new Date("2025-10-18T14:00:00+09:00").getTime();
   const el = document.getElementById("countdown");
+  if (!el) return;
+
   function tick() {
     const now = Date.now();
     let diff = Math.max(0, target - now);
@@ -306,6 +308,7 @@ function commentsKey() {
   return "wedding_comments_" + lang;
 }
 
+/*
 function loadComments() {
   const list = document.getElementById("commentsList");
   list.innerHTML = "";
@@ -319,7 +322,7 @@ function loadComments() {
     `;
     list.appendChild(div);
   }
-}
+}*/
 
 function escapeHtml(str) {
   const div = document.createElement("div");
@@ -327,6 +330,7 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+/*
 function initCommentForm() {
   const form = document.getElementById("commentForm");
   form.addEventListener("submit", (e) => {
@@ -342,7 +346,7 @@ function initCommentForm() {
     document.getElementById("msgInput").value = "";
     loadComments();
   });
-}
+} */
 
 function initYear() {
   document.getElementById("year").textContent = new Date().getFullYear();
@@ -417,8 +421,8 @@ function renderSimpleCal(containerId, date, lang) {
   document.getElementById("switchKo").href = "?lang=ko";
   initCountdown();
   initLightbox();
-  initCommentForm();
-  loadComments();
+  // initCommentForm();
+  // loadComments();
   initYear();
 })();
 
@@ -776,126 +780,105 @@ function renderMealSelectors(n) {
   wrap.style.display = n > 0 ? "block" : "none";
 }
 
-// ========= Global comments via Supabase (hardened) =========
+// ---- Supabase client (reuse if already there) ----
 const SUPABASE_URL = "https://jwhsbyeyfoanuwrniljk.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3aHNieWV5Zm9hbnV3cm5pbGprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczMTg3NjAsImV4cCI6MjA3Mjg5NDc2MH0.08g3uC-BygItHBW5zqw9FmHX5CpUI98wtB5TCigLM04";
+window.sb ||= window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-if (!window.supabase) {
-  console.error("Supabase JS not loaded. Make sure the CDN <script> tag is above this file.");
-}
+const seenIds = new Set();
 
-const sb = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+(function initGlobalComments() {
+  window.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("commentForm");
+    const nameI = document.getElementById("nameInput");
+    const msgI = document.getElementById("msgInput");
 
-function escapeHtml(s) {
-  const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
-  return String(s).replace(/[&<>"']/g, m => map[m]);
-}
-function fmtDate(iso) {
-  const d = new Date(iso);
-  return d.toLocaleString(document.documentElement.lang || "en", {
-    year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
-  });
-}
+    // IMPORTANT: look up the list *inside* each function so it can’t be stale/null
+    const getList = () => document.getElementById("commentList");
 
-window.addEventListener("DOMContentLoaded", () => {
-  // Grab elements AFTER DOM is ready
-  const commentForm = document.getElementById("commentForm");
-  const commentList = document.getElementById("commentList");
-  const cName = document.getElementById("nameInput");
-  const cMsg = document.getElementById("msgInput");
-
-  if (!commentForm || !commentList || !cName || !cMsg) {
-    console.error("Comment elements not found", { commentForm, commentList, cName, cMsg });
-    return;
-  }
-  if (!sb) {
-    console.error("Supabase client not initialized.");
-    return;
-  }
-
-  async function loadComments() {
-    const { data, error } = await sb
-      .from("comments")
-      .select("*")
-      .eq("page", "main")
-      .order("created_at", { ascending: false })
-      .limit(100);
-
-    if (error) {
-      console.error("Load comments error:", error);
+    if (!form || !nameI || !msgI || !getList()) {
+      console.log("[comments] Skipping: UI not found on this page", { path: location.pathname });
       return;
     }
-    commentList.innerHTML = (data || []).map(c => `
+    if (!window.sb) { console.error("[comments] Supabase client not initialized"); return; }
+
+    const esc = s => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    const fmt = iso => new Date(iso).toLocaleString(document.documentElement.lang || "en",
+      { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+
+    async function loadCommentsSB() {
+      const list = getList(); if (!list) return;
+      const { data, error } = await sb
+        .from("comments").select("*")
+        .eq("page", "main")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      if (error) { console.error("[comments] Load error:", error); return; }
+      list.innerHTML = (data || []).map(c => `
+        <div class="comment">
+          <div class="meta">${esc(c.name)} • ${fmt(c.created_at)}</div>
+          <div class="body">${esc(c.message).replace(/\n/g, "<br>")}</div>
+        </div>
+      `).join("");
+    }
+
+    // Optional realtime
+    try {
+      sb.channel("comments-realtime")
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "comments" }, ({ new: c }) => {
+          // ⬇️ add this line at the top of the handler
+          if (seenIds.has(c.id)) return;  // skip our own freshly-inserted row
+
+          // …then your existing prepend code:
+          const item = `
       <div class="comment">
-        <div class="meta">${escapeHtml(c.name)} • ${fmtDate(c.created_at)}</div>
-        <div class="body">${escapeHtml(c.message).replace(/\n/g, "<br>")}</div>
-      </div>
-    `).join("");
-  }
-
-  // Optional realtime (enable Realtime for the table in Supabase UI)
-  try {
-    sb.channel('comments-channel')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'comments' }, payload => {
-        const c = payload.new;
-        const item = `
-          <div class="comment">
-            <div class="meta">${escapeHtml(c.name)} • ${fmtDate(c.created_at)}</div>
-            <div class="body">${escapeHtml(c.message).replace(/\n/g, "<br>")}</div>
-          </div>`;
-        commentList.innerHTML = item + commentList.innerHTML;
-      })
-      .subscribe();
-  } catch (e) {
-    console.warn("Realtime not active (that's okay):", e);
-  }
-
-  commentForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const name = (cName.value || "").trim();
-    const message = (cMsg.value || "").trim();
-    if (!name || !message) {
-      alert((document.documentElement.lang || "en").startsWith("ko") ? "이름과 메시지를 입력해주세요." : "Please enter your name and message.");
-      return;
-    }
-
-    const btn = commentForm.querySelector('button[type="submit"]');
-    const orig = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = (document.documentElement.lang || "en").startsWith("ko") ? "전송 중…" : "Posting…";
-
-    // 🔽 ask Supabase to return the inserted row
-    const { data, error } = await sb
-      .from("comments")
-      .insert({ name, message, page: "main", lang: (document.documentElement.lang || "en") })
-      .select()                // <— important
-      .single();               // only one row expected
-
-    btn.disabled = false;
-    btn.textContent = orig;
-
-    if (error) {
-      console.error("Insert error:", error);
-      alert(((document.documentElement.lang || "en").startsWith("ko")
-        ? "등록에 실패했습니다: "
-        : "Failed to post: ") + (error.message || "Unknown error"));
-      return;
-    }
-
-    // Prepend the new comment to the list
-    const c = data;
-    const item = `
-      <div class="comment">
-        <div class="meta">${escapeHtml(c.name)} • ${fmtDate(c.created_at)}</div>
-        <div class="body">${escapeHtml(c.message).replace(/\n/g, "<br>")}</div>
+        <div class="meta">${esc(c.name)} • ${fmt(c.created_at)}</div>
+        <div class="body">${esc(c.message).replace(/\n/g, "<br>")}</div>
       </div>`;
-    commentList.innerHTML = item + commentList.innerHTML;
+          const list = document.getElementById("commentList");
+          if (list) list.innerHTML = item + list.innerHTML;
+        })
+    } catch { }
 
-    cMsg.value = "";
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = (nameI.value || "").trim();
+      const message = (msgI.value || "").trim();
+      if (!name || !message) {
+        alert((document.documentElement.lang || "en").startsWith("ko") ? "이름과 메시지를 입력해주세요." : "Please enter your name and message.");
+        return;
+      }
+      const btn = form.querySelector('button[type="submit"]');
+      const orig = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = (document.documentElement.lang || "en").startsWith("ko") ? "전송 중…" : "Posting…";
+
+      const { data, error } = await sb
+        .from("comments")
+        .insert({ name, message, page: "main", lang: (document.documentElement.lang || "en") })
+        .select().single();
+      seenIds.add(data.id);
+
+      btn.disabled = false;
+      btn.textContent = orig;
+
+      if (error) {
+        console.error("[comments] Insert error:", error);
+        alert(((document.documentElement.lang || "en").startsWith("ko") ? "등록에 실패했습니다: " : "Failed to post: ") + (error.message || "Unknown error"));
+        return;
+      }
+
+      // prepend
+      const list = getList(); if (list) {
+        list.innerHTML = `
+          <div class="comment">
+            <div class="meta">${esc(data.name)} • ${fmt(data.created_at)}</div>
+            <div class="body">${esc(data.message).replace(/\n/g, "<br>")}</div>
+          </div>` + list.innerHTML;
+      }
+      msgI.value = "";
+    });
+
+    loadCommentsSB();
   });
-
-  // Initial render
-  loadComments();
-});
-
-window.sb = sb;
+})();
