@@ -587,6 +587,9 @@ window.copyBank = copyBank;
   const closeBtn = document.getElementById("closeRsvp");
   const sendBtn = document.getElementById("sendRsvp");
   const countSel = document.getElementById("rsvpCount");
+
+  // == Toggle: require per-guest meal selections? ==
+  const MEALS_ENABLED = false; // set to true if you bring meals back later
   if (!modal || !openBtn || !closeBtn || !sendBtn || !countSel) return;
 
   function openModal() { modal.classList.add("open"); modal.setAttribute("aria-hidden", "false"); }
@@ -607,10 +610,15 @@ window.copyBank = copyBank;
       // When attendance changes, show/hide meal selects
       if (group.dataset.name === "attend") {
         const val = btn.dataset.value || "";
-        if (val.includes("불참") || val.toLowerCase().includes("not")) {
-          renderMealSelectors(0);
+        if (MEALS_ENABLED) {
+          if (val.includes("불참") || val.toLowerCase().includes("not")) {
+            renderMealSelectors(0);
+          } else {
+            renderMealSelectors(parseInt(countSel.value || "0", 10));
+          }
         } else {
-          renderMealSelectors(parseInt(countSel.value || "0", 10));
+          // ensure hidden if meals are disabled
+          renderMealSelectors(0);
         }
       }
     });
@@ -619,18 +627,25 @@ window.copyBank = copyBank;
   // When count changes, (re)render meal selects if attending
   countSel.addEventListener("change", () => {
     const attendVal = modal.querySelector('.segmented[data-name="attend"] .opt.active')?.dataset.value || "";
-    if (attendVal.includes("불참") || attendVal.toLowerCase().includes("not")) {
-      renderMealSelectors(0);
+    if (MEALS_ENABLED) {
+      if (attendVal.includes("불참") || attendVal.toLowerCase().includes("not")) {
+        renderMealSelectors(0);
+      } else {
+        renderMealSelectors(parseInt(countSel.value || "0", 10));
+      }
     } else {
-      renderMealSelectors(parseInt(countSel.value || "0", 10));
+      renderMealSelectors(0);
     }
   });
 
-  // Initial render for meals
   (function initMeals() {
     const attendVal = modal.querySelector('.segmented[data-name="attend"] .opt.active')?.dataset.value || "";
     const n = parseInt(countSel.value || "0", 10);
-    renderMealSelectors((attendVal.includes("불참") || attendVal.toLowerCase().includes("not")) ? 0 : n);
+    if (MEALS_ENABLED) {
+      renderMealSelectors((attendVal.includes("불참") || attendVal.toLowerCase().includes("not")) ? 0 : n);
+    } else {
+      renderMealSelectors(0);
+    }
   })();
 
   function getSelected(name) {
@@ -674,6 +689,7 @@ window.copyBank = copyBank;
       return;
     }
 
+    /* Original base code
     const data = {
       side: getSelected("side"),
       name,
@@ -683,8 +699,19 @@ window.copyBank = copyBank;
       lang: (document.documentElement.lang || "en"),
       timestamp: new Date().toISOString(),
       ...collectMealChoices()          // meal_1, meal_2, ...
+    };*/
+
+    // new base code
+    const data = {
+      side: getSelected("side"),
+      name,
+      attend: getSelected("attend"),
+      count: countSel.value,
+      lang: (document.documentElement.lang || "en"),
+      timestamp: new Date().toISOString()
     };
 
+    /* original meal branch code
     // 👇 Collect guest meals
     const meals = collectMealChoices();
 
@@ -709,6 +736,32 @@ window.copyBank = copyBank;
           return;
         }
       }
+    }*/
+
+    // meals branch (new code)
+    if (MEALS_ENABLED && attending && n > 0) {
+      const meals = collectMealChoices();
+      // merge meal_1, meal_2...
+      Object.assign(data, meals);
+
+      // human-readable summary
+      data.meal_summary = Object.entries(meals)
+        .map(([k, v]) => `${k.replace('meal_', 'Guest ')}: ${v}`)
+        .join(', ');
+
+      // validate each guest meal
+      for (let i = 1; i <= n; i++) {
+        if (!data[`meal_${i}`]) {
+          alert((document.documentElement.lang || "en").startsWith("ko")
+            ? `인원 ${i}의 식사 메뉴를 선택해주세요.`
+            : `Please select a meal for guest ${i}.`);
+          return;
+        }
+      }
+    } else {
+      // explicitly mark as not-applicable so your backend/Netlify sees a field
+      data.meal = "N/A";
+      data.meal_summary = "N/A";
     }
 
     // UX
