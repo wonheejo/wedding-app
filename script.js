@@ -707,6 +707,7 @@ window.copyBank = copyBank;
       name,
       attend: getSelected("attend"),
       count: countSel.value,
+      AFattend: getSelected("AFattend"),
       lang: (document.documentElement.lang || "en"),
       timestamp: new Date().toISOString()
     };
